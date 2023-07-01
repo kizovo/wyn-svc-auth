@@ -1,9 +1,31 @@
-# Elysia with Bun runtime
+# Wyn - Service User
+This service will handle all about user registration, authentication, verification, etc
 
 ## Getting Started
-To get started with this template, simply paste this command into your terminal:
+To get started this service, simply follow this step using terminal:
+
+Clone the project
+```
+git clone <url_repo>
+```
+
+Rename env.dev into .env found on root project folder
+```
+npm install
+bun install
+```
+
+Create MySQL database using docker:
+  - Install docker desktop https://www.docker.com/products/docker-desktop/
+  - Running this command to create image & runs it:
+  ```
+  docker run --name mysql-container -p 3306:3306 -e "MYSQL_ROOT_PASSWORD= " -e "MYSQL_USER=<username>" -e "MYSQL_PASSWORD=<password>" -e "MYSQL_DATABASE=<database_name>" -v ~/mysql/db/:/var/lib/mysql/ -v ~/mysql/init/:/docker-entrypoint-initdb.d/ -d mysql
+  ```  
+
+Update DATABASE_URL value accordingly on .env file
+Run migration files
 ```bash
-bun create elysia ./elysia-example
+bunx prisma migrate dev --name init
 ```
 
 ## Development
