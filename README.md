@@ -1,5 +1,6 @@
 # Wyn - Service User
-This service will handle all about user registration, authentication, verification, etc
+This service will handle all about user registration, authentication, verification, etc.
+Port used: 3001
 
 ## Getting Started
 To get started this service, simply follow this step using terminal:
@@ -35,4 +36,4 @@ To start the development server run:
 bun run dev
 ```
 
-Open http://localhost:3000/ with your browser to see the result.
+Open http://localhost:3001/ with your browser to see the result.
