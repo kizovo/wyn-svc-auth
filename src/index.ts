@@ -1,12 +1,11 @@
 import { Elysia } from "elysia";
-import routes from "./routes";
 import conf from "./conf";
+import routes from "./routes";
 
 const app = new Elysia()
   .use(routes({
-        prefix: 'users'
-    }))
-  .get("/", () => "Hello Elysia")
+    prefix: 'users',
+  }))
   .listen(Number(conf.APP_PORT));
 
 console.log(

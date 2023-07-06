@@ -1,35 +1,22 @@
 import { Elysia, t } from 'elysia'
-import { PrismaClient } from '@prisma/client'
+import constant from './constant'
+import UserHandler from './handlers/UserHandler'
 
-const db = new PrismaClient()
+const userHandler = new UserHandler
 
 const routes = ({
   prefix = 'users'
 }) => (app: Elysia) => app
   .group(`api/${prefix}/v1`, app => {
     return app
+      .post('/sign-up', ({ body }) =>
+        userHandler.insertUser(body)
+      )
       .get(`/stat`, () => 'Welcome to svc-user')
-      .post('/sign-up', async ({ body }) => db.user.create({
-          data: body
-        }),
-        {
-          body: t.Object({
-            username: t.String(),
-            password: t.String({
-              minLength: 8
-            })
-          })
-        }
-      )
       .get(`/`, ({ set }) => (
-        set.headers["x-powered-by"] = "wyn",
-        {
-          'users': [
-            { id: 1, name: 'John' },
-            { id: 2, name: 'Jane' },
-          ],
-        })
-      )
+        set.headers = constant.headers,
+        userHandler.listUser()
+      ))
   })
 
 export default routes;
