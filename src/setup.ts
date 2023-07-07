@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 
 const setup = {
-  dbPrisma: new PrismaClient()
+  dbMysql: new PrismaClient()
 }
 
 export default setup;

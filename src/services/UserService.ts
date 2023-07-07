@@ -1,14 +1,14 @@
-import UserRepository from '../repository/UserRepository'
-import setup from "../setup";
+import UserRepository from '@repositories/UserRepository'
+import setup from '@/setup'
 
 export default class UserService {
-  private userRepository = new UserRepository(setup.dbPrisma)
+  private userRepository = new UserRepository(setup.dbMysql)
 
-  listUser() {
-    this.userRepository.queryListUser()
+  async listUser() {
+    return await this.userRepository.queryListUser()
   }
 
-  insertUser(req: any) {
-    this.userRepository.queryInsertUser(req)
+  async insertUser(req: any) {
+    await this.userRepository.queryInsertUser(req)
   }
 }

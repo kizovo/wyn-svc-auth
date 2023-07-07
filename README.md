@@ -20,7 +20,11 @@ bun install
   - Install docker desktop https://www.docker.com/products/docker-desktop/
   - Running this command to create image & runs it:
   ```
-  docker run --name mysql-container -p 3306:3306 -e "MYSQL_ROOT_PASSWORD=<root_password>" -e "MYSQL_USER=<username>" -e "MYSQL_PASSWORD=<password>" -e "MYSQL_DATABASE=<database_name>" -v ~/mysql/db/:/var/lib/mysql/ -v ~/mysql/init/:/docker-entrypoint-initdb.d/ -d mysql
+  docker run --name <container_name> -p 3306:3306 -e "MYSQL_ROOT_PASSWORD=<root_password>" -e "MYSQL_USER=<username>" -e "MYSQL_PASSWORD=<password>" -e "MYSQL_DATABASE=<database_name>" -v ~/mysql/db/:/var/lib/mysql/ -v ~/mysql/init/:/docker-entrypoint-initdb.d/ -d mysql
+  ```
+  - To just running the docker container:
+  ```
+  docker start <container_name>
   ```
   - Enter MySQL container environment & create shadow database:
   ```
