@@ -1,14 +1,20 @@
 import UserRepository from '@repositories/UserRepository'
-import setup from '@/setup'
+import Setup from '@/Setup'
 
 export default class UserService {
-  private userRepository = new UserRepository(setup.dbMysql)
+  private Setup: Setup
+  private UserRepository: UserRepository
+
+  constructor(setup: Setup) {
+    this.Setup = setup
+    this.UserRepository = new UserRepository(this.Setup.dbMysql())
+  }
 
   async listUser() {
-    return await this.userRepository.queryListUser()
+    return await this.UserRepository.queryListUser()
   }
 
   async insertUser(req: any) {
-    await this.userRepository.queryInsertUser(req)
+    await this.UserRepository.queryInsertUser(req)
   }
 }

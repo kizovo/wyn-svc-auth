@@ -4,16 +4,20 @@ import { IBasicResponse, errorResponse, successResponse } from '@handlers/BasicH
 import { ISignupReq } from '@models/UserModel'
 
 export default class UserHandler {
-  private userService = new UserService
+  private UserService: UserService
+
+  constructor(userService: UserService) {
+    this.UserService = userService
+  }
 
   async listUser(): Promise<IBasicResponse> {
-    const data = await this.userService.listUser()
+    const data = await this.UserService.listUser()
     return successResponse(data, "")
   }
 
   async insertUser(req: ISignupReq) {
     try {
-      await this.userService.insertUser(req)
+      await this.UserService.insertUser(req)
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
