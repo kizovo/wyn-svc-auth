@@ -1,3 +1,5 @@
+// Put all global constant here, especially for simple explicit value that repeatedly used throughout files.
+
 const constant = {
   headers: {
     'x-powered-by': 'wyn',

@@ -1,6 +1,7 @@
 {
   "name": "svc-user",
   "version": "1.0.42",
+  "author": "Rheza Sindhuwinata <rheza.s@gmail.com>",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "bun run --watch src/index.ts"

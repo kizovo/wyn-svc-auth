@@ -1,7 +1,7 @@
 import { t } from 'elysia'
 
-const requestValidation = {
-  'user.signup': t.Object({
+const validationHandler = {
+  'user.signup.in': t.Object({
     username: t.String(),
     password: t.String({
       minLength: 8
@@ -9,4 +9,4 @@ const requestValidation = {
   })
 }
 
-export default requestValidation;
+export default validationHandler;

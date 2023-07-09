@@ -8,6 +8,7 @@ export default class UserRepository {
   }
 
   async queryListUser(): Promise<IUser> {
+    this.db.$queryRaw
     return await this.db.user.findMany();
   }
 

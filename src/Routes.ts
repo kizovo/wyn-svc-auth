@@ -1,13 +1,12 @@
 import { Elysia } from 'elysia'
+import { ISignupReq } from '@models/UserModel'
+import { errorResponse } from '@handlers/BasicHandler'
 import constant from '@/constant'
-import requestValidation from '@handlers/RequestValidationHandler'
+import Setup from '@/Setup'
+import validationHandler from '@handlers/ValidationHandler'
 
 import UserHandler from '@handlers/UserHandler'
 import UserService from '@services/UserService'
-
-import { ISignupReq } from '@models/UserModel'
-import { errorResponse } from '@handlers/BasicHandler'
-import Setup from '@/Setup'
 
 export default class Routes {
   private App: Elysia
@@ -25,11 +24,11 @@ export default class Routes {
     return () => this.App
       .group(`api/users/v1`, (app) => {
       return app
-        .model(requestValidation)
+        .model(validationHandler)
         .post('/signup', async ({ set, body }) => (
           set.headers = constant.headers,
           await userHandler.insertUser(body as ISignupReq)
-        ), { body: 'user.signup' })
+        ), { body: 'user.signup.in' })
         .get(`/stat`, () => 'Welcome to svc-user')
         .get(`/`, ({ set }) => (
           set.headers = constant.headers,
@@ -39,14 +38,14 @@ export default class Routes {
       .onError(({ code, error, set }) => {
         console.log(error)
         if (code === 'NOT_FOUND') {
-          const code_num = constant.error_code[code]
-          set.status = code_num
-          return errorResponse(code_num.toString(), `We looked everywhere, but it seems the file you're searching for is on vacation. It left no forwarding address!`)
+          const CODE_NUM = constant.error_code[code]
+          set.status = CODE_NUM
+          return errorResponse(CODE_NUM.toString(), `We looked everywhere, but it seems the file you're searching for is on vacation. It left no forwarding address!`)
         }
         if (code === 'INTERNAL_SERVER_ERROR') {
-          const code_num = constant.error_code[code]
-          set.status = code_num
-          return errorResponse(code_num.toString(), `Uh-oh! Our server gremlins are up to their mischief again. They've hidden the requested page in a parallel universe. We're on it!`)
+          const CODE_NUM = constant.error_code[code]
+          set.status = CODE_NUM
+          return errorResponse(CODE_NUM.toString(), `Uh-oh! Our server gremlins are up to their mischief again. They've hidden the requested page in a parallel universe. We're on it!`)
         }
       })
   }
