@@ -1,4 +1,4 @@
-import { IUser } from '@models/UserModel'
+import { IUser, ISignupReq, IEUser } from '@models/UserModel'
 
 export default class UserRepository {
   private db
@@ -7,14 +7,31 @@ export default class UserRepository {
     this.db = Db
   }
 
-  async queryListUser(): Promise<IUser> {
-    this.db.$queryRaw
-    return await this.db.user.findMany();
+  async queryAllUserPaginated(): Promise<IUser[]> {
+    const users = await this.db.users.findMany()
+    return users
   }
 
-  async queryInsertUser(req: any) {
-    await this.db.user.create({
-      data: req
-    })
+  async queryInsertUser(req: ISignupReq): Promise<IEUser> {
+    try {
+      const result = await this.db.users.create({ data: req })
+      return this.successResult(result)
+    } catch (e: any) {
+      return this.errorResult({ code: "PC000", message: e.message })
+    }
+  }
+
+  private successResult(data: any) {
+    return {
+      data,
+      error: null
+    }
+  }
+
+  private errorResult(error: any) {
+    return {
+      data: null,
+      error
+    }
   }
 }

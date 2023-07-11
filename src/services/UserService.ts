@@ -1,20 +1,22 @@
 import UserRepository from '@repositories/UserRepository'
-import Setup from '@/Setup'
+import SetupDB from '@setup/Db'
+
+import { ISignupReq, IEUser } from '@models/UserModel'
 
 export default class UserService {
-  private Setup: Setup
+  private Db: SetupDB
   private UserRepository: UserRepository
 
-  constructor(setup: Setup) {
-    this.Setup = setup
-    this.UserRepository = new UserRepository(this.Setup.dbMysql())
+  constructor(db: SetupDB) {
+    this.Db = db
+    this.UserRepository = new UserRepository(this.Db.dbMysql())
   }
 
-  async listUser() {
-    return await this.UserRepository.queryListUser()
+  async allUserPaginated() {
+    return await this.UserRepository.queryAllUserPaginated()
   }
 
-  async insertUser(req: any) {
-    await this.UserRepository.queryInsertUser(req)
+  async userSignup(req: ISignupReq): Promise<IEUser> {
+    return await this.UserRepository.queryInsertUser(req)
   }
 }

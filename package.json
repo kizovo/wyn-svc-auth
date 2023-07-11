@@ -8,12 +8,12 @@
   },
   "dependencies": {
     "@elysiajs/swagger": "^0.5.2",
-    "@prisma/client": "4.16.1",
+    "@prisma/client": "^4.16.2",
     "elysia": "latest"
   },
   "devDependencies": {
     "bun-types": "latest",
-    "prisma": "^4.16.1"
+    "prisma": "^4.16.2"
   },
   "module": "src/index.js"
 }

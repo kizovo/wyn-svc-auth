@@ -2,7 +2,7 @@ import { t } from 'elysia'
 
 const validationHandler = {
   'user.signup.in': t.Object({
-    username: t.String(),
+    email: t.String(),
     password: t.String({
       minLength: 8
     })

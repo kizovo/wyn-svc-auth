@@ -1,14 +1,22 @@
+import { IError } from '@models/Model'
+
 interface ISignupReq {
-  username: string;
+  email: string;
   password: string;
 }
 
 interface IUser {
-  username: string;
+  email: string;
   password: string;
+}
+
+interface IEUser {
+  data: IUser | null;
+  error: IError | null;
 }
 
 export {
   ISignupReq,
-  IUser
+  IUser,
+  IEUser
 }

@@ -2,11 +2,11 @@ import { Elysia } from 'elysia'
 import { swagger } from '@elysiajs/swagger'
 import config from '@/config'
 import Routes from '@/Routes'
-import Setup from '@/Setup'
+import SetupDB from '@setup/Db'
 
 const app = new Elysia()
-const setup = new Setup()
-const routes = new Routes(app, setup)
+const setupDB = new SetupDB()
+const routes = new Routes(app, setupDB)
 const router = routes.router()
 
 app
@@ -14,7 +14,7 @@ app
   .use(router)
   .listen(Number(config.APP_PORT));
 
-if (!await setup.isDatabaseConnect()) {
+if (!await setupDB.isDatabaseConnect()) {
   app.stop();
   process.exit(0)
 }

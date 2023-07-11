@@ -113,7 +113,7 @@ Open http://localhost:<server_port>/ with your browser to see the result.
 - All global constant at: **src/constant.ts**
 - Dependencies Injection at: **src/Setup.ts**   
 ### Flow:
-  A request hit an endpoint that defined by **routes**, will be catch by **handlers**. One route only have one handler. Handler will act as a **request sanitizer** before it reach to a service and will format a standarized the response that sent back to client. Handler send the request to a service. One handler only have one service, but one service can have call to several repositories. Repositories handle query to database.   
+  A request hit an endpoint that the path defined by **routes**, the request then will be catch by **handlers**. One route only have one handler. Handler will act as a **request sanitizer** before it pass to a service and the response callback will be formatted as a standarized response before it sent back to the client. Handler passes the request to a service. One handler only have one service, but one service may call several repositories. **Repositories** handle query to database.   
 
 ---
 ### Disclaimer   
