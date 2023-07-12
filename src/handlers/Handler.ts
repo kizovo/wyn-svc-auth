@@ -1,4 +1,4 @@
-import constant from '@/constant'
+import { ERROR_CODE, ERROR_MSG_BY_CODE } from '@/constant'
 
 interface IBasicResponse {
   code: string;
@@ -26,16 +26,15 @@ const successResponse = (iData: any, iMessage: string) => {
 }
 
 function errorHandler(ctx: any, code: string) {
-  if (code === 'NOT_FOUND') {
-      const CODE_NUM = constant.error_code[code]
-      ctx.status = CODE_NUM
-      return errorResponse(CODE_NUM.toString(), `We looked everywhere, but it seems the file you're searching for is on vacation. It left no forwarding address!`)
-    }
-  if (code === 'INTERNAL_SERVER_ERROR') {
-    const CODE_NUM = constant.error_code[code]
-    ctx.status = CODE_NUM
-    return errorResponse(CODE_NUM.toString(), `Uh-oh! Our server gremlins are up to their mischief again. They've hidden the requested page in a parallel universe. We're on it!`)
+  if (!ERROR_CODE[code]) {
+    ctx.status = 500
+    return errorResponse('500', ERROR_MSG_BY_CODE['500'])
   }
+
+  ctx.status = ERROR_CODE[code]
+  const CODE_NUM = ERROR_CODE[code].toString()
+  if (code === 'NOT_FOUND') return errorResponse(CODE_NUM, ERROR_MSG_BY_CODE[CODE_NUM])
+  if (code === 'INTERNAL_SERVER_ERROR') return errorResponse(CODE_NUM, ERROR_MSG_BY_CODE[CODE_NUM])
 }
 
 export {

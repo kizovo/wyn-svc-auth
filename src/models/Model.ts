@@ -3,6 +3,16 @@ interface IError {
   message: string;
 }
 
+interface IObjKeyString {
+  [key: string]: string;
+}
+
+interface IObjValNumber {
+  [key: string]: number;
+}
+
 export {
-  IError
+  IError,
+  IObjKeyString,
+  IObjValNumber
 }

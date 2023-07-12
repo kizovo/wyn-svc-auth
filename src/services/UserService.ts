@@ -9,10 +9,10 @@ export default class UserService {
 
   constructor(db: SetupDB) {
     this.Db = db
-    this.UserRepository = new UserRepository(this.Db.dbMysql())
+    this.UserRepository = new UserRepository(this.Db)
   }
 
-  async allUserPaginated() {
+  async allUserPaginated(): Promise<IEUser> {
     return await this.UserRepository.queryAllUserPaginated()
   }
 
