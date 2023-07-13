@@ -6,6 +6,7 @@ export default class Db {
 
   constructor() {
     this.prismaClient = new PrismaClient({
+      errorFormat: 'minimal',
       log: [
         {
           emit: "event",
@@ -17,7 +18,7 @@ export default class Db {
       ],
     })
     if (config.APP_ENV != "prod") {
-      this.prismaClient.$on("query", e => {
+      this.prismaClient.$on("query", (e: { query: string, params: any[], duration: number }) => {
         console.log("Query: " + e.query);
         console.log('Params: ' + e.params)
         console.log("Duration: " + e.duration + "ms");
