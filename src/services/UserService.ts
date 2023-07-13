@@ -1,15 +1,15 @@
 import UserRepository from '@repositories/UserRepository'
-import SetupDB from '@setup/Db'
 
+import { ISetup } from '@models/Model'
 import { ISignupReq, IEUser } from '@models/UserModel'
 
 export default class UserService {
-  private Db: SetupDB
+  private Setup: any
   private UserRepository: UserRepository
 
-  constructor(db: SetupDB) {
-    this.Db = db
-    this.UserRepository = new UserRepository(this.Db)
+  constructor(setup: ISetup) {
+    this.Setup = setup
+    this.UserRepository = new UserRepository(this.Setup)
   }
 
   async allUserPaginated(): Promise<IEUser> {

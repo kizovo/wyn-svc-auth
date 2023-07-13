@@ -3,10 +3,12 @@ import { swagger } from '@elysiajs/swagger'
 import config from '@/config'
 import Routes from '@/Routes'
 import SetupDB from '@setup/Db'
+import SetupLog from '@setup/Log'
 
 const app = new Elysia()
 const setupDB = new SetupDB()
-const routes = new Routes(app, setupDB)
+const setupLog = new SetupLog()
+const routes = new Routes(app, { db: setupDB, log: setupLog })
 const router = routes.router()
 
 app

@@ -1,17 +1,19 @@
-import SetupDB from '@setup/Db'
 import { ERROR_MSG_BY_CODE } from '@/constant'
-import { IUser, ISignupReq, IEUser } from '@models/UserModel'
+import { ISetup } from '@models/Model'
+import { ISignupReq, IEUser } from '@models/UserModel'
 
 export default class UserRepository {
-  private Db: any;
+  private DbMysql: any;
+  private LogSentry: any;
 
-  constructor(db: SetupDB) {
-    this.Db = db.dbMysql()
+  constructor(setup: ISetup) {
+    this.DbMysql = setup.db.dbMysql()
+    this.LogSentry = setup.log
   }
 
   async queryAllUserPaginated(): Promise<IEUser> {
     try {
-      const result = await this.Db.users.findMany({
+      const result = await this.DbMysql.users.findMany({
         select: {
           email: true,
         }
@@ -24,7 +26,7 @@ export default class UserRepository {
 
   async queryInsertUser(req: ISignupReq): Promise<IEUser> {
     try {
-      const result = await this.Db.users.create({ data: req })
+      const result = await this.DbMysql.users.create({ data: req })
       return this.successResult(result)
     } catch (e: any) {
       return this.errorResult(e)
@@ -41,6 +43,7 @@ export default class UserRepository {
       message: ERROR_MSG_BY_CODE['E0000']
     }
 
+    this.LogSentry.captureException(e);
     if (!ERROR_MSG_BY_CODE[e.code] && e.message) {
       error.message = e.message
     } else {

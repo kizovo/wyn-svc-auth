@@ -2,23 +2,23 @@ import { Elysia } from 'elysia'
 import { ISignupReq } from '@models/UserModel'
 import { errorHandler } from '@handlers/Handler'
 import validationHandler from '@handlers/ValidationHandler'
-import SetupDB from '@setup/Db'
+import { ISetup } from '@models/Model'
 
 import UserHandler from '@handlers/UserHandler'
 import UserService from '@services/UserService'
 
 export default class Routes {
   private App: Elysia
-  private Db: SetupDB
+  private Setup: ISetup
 
-  constructor(app: Elysia, db: SetupDB) {
+  constructor(app: Elysia, setup: ISetup) {
     this.App = app
-    this.Db = db
+    this.Setup = setup
   }
 
   router() {
-    const userService = new UserService(this.Db)
-    const userHandler = new UserHandler(userService)
+    const userService = new UserService(this.Setup)
+    const userHandler = new UserHandler(this.Setup, userService)
 
     return () => this.App
       .group(`api/users/v1`, (app) => {
