@@ -4,7 +4,11 @@
   "author": "Rheza Sindhuwinata <rheza.s@gmail.com>",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "bun run --watch src/index.ts"
+    "dev": "bun run --watch src/index.ts",
+    "precommit": "pretty-quick --staged",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@elysiajs/swagger": "^0.5.2",
@@ -13,7 +17,14 @@
     "elysia": "latest"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
     "bun-types": "latest",
+    "eslint": "^8.44.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "prettier": "3.0.0",
+    "pretty-quick": "3.1.3",
     "prisma": "^4.16.2"
   },
   "module": "src/index.js"

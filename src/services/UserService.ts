@@ -4,7 +4,7 @@ import { ISetup } from '@models/Model'
 import { ISignupReq, IEUser } from '@models/UserModel'
 
 export default class UserService {
-  private Setup: any
+  private Setup
   private UserRepository: UserRepository
 
   constructor(setup: ISetup) {

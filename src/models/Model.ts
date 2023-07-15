@@ -2,16 +2,17 @@ import SetupDB from '@setup/Db'
 import SetupLog from '@setup/Log'
 
 interface IError {
-  code: string;
-  message: string;
+  code: string
+  message: string
+  e: any
 }
 
 interface IObjKeyString {
-  [key: string]: string;
+  [key: string]: string
 }
 
 interface IObjValNumber {
-  [key: string]: number;
+  [key: string]: number
 }
 
 interface ISetup {
@@ -19,9 +20,4 @@ interface ISetup {
   log: SetupLog
 }
 
-export {
-  IError,
-  IObjKeyString,
-  IObjValNumber,
-  ISetup
-}
+export { IError, IObjKeyString, IObjValNumber, ISetup }

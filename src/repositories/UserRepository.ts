@@ -1,10 +1,11 @@
-import { ERROR_MSG_BY_CODE } from '@/constant'
+import { ERROR_MSG_BY_CODE, ERROR_RESULT } from '@/constant'
 import { ISetup } from '@models/Model'
 import { ISignupReq, IEUser } from '@models/UserModel'
+import { Exception } from '@sentry/browser'
 
 export default class UserRepository {
-  private DbMysql: any;
-  private LogSentry: any;
+  private DbMysql
+  private LogSentry
 
   constructor(setup: ISetup) {
     this.DbMysql = setup.db.dbMysql()
@@ -16,10 +17,10 @@ export default class UserRepository {
       const result = await this.DbMysql.users.findMany({
         select: {
           email: true,
-        }
+        },
       })
       return this.successResult(result)
-    } catch (e: any) {
+    } catch (e) {
       return this.errorResult(e)
     }
   }
@@ -28,29 +29,26 @@ export default class UserRepository {
     try {
       const result = await this.DbMysql.users.create({ data: req })
       return this.successResult(result)
-    } catch (e: any) {
+    } catch (e) {
       return this.errorResult(e)
     }
   }
 
-  private successResult(data: any) {
+  private successResult(data: object): IEUser {
     return { data, error: null }
   }
 
-  private errorResult(e: any): any {
-    const error = {
-      code: 'E0000',
-      message: ERROR_MSG_BY_CODE['E0000']
-    }
+  private errorResult(e: any): IEUser {
+    this.LogSentry.captureException(e as Exception)
 
-    this.LogSentry.captureException(e);
+    ERROR_RESULT.e = e
     if (!ERROR_MSG_BY_CODE[e.code] && e.message) {
-      error.message = e.message
+      ERROR_RESULT.message = e.message
     } else {
-      error.code = e.code
-      error.message = ERROR_MSG_BY_CODE[e.code]
+      ERROR_RESULT.code = e.code
+      ERROR_RESULT.message = ERROR_MSG_BY_CODE[e.code]
     }
 
-    return { data: null, error }
+    return { data: null, error: ERROR_RESULT }
   }
 }

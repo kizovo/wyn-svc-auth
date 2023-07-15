@@ -20,20 +20,20 @@ export default class Routes {
     const userService = new UserService(this.Setup)
     const userHandler = new UserHandler(this.Setup, userService)
 
-    return () => this.App
-      .group(`api/users/v1`, (app) => {
-      return app
-        .model(validationHandler)
-        .post('/signup', async ({ set, body }) => (
-          await userHandler.userSignup(set, body as ISignupReq)
-        ), { body: 'user.signup.in' })
-        .get(`/stat`, () => 'Welcome to svc-user')
-        .get(`/`, ({ set }) => (
-          userHandler.allUserPaginated(set)
-        ))
-      })
-      .onError(({ code, set }) => {
-        return errorHandler(set, code)
+    return () =>
+      this.App.group(`api/users/v1`, (app) => {
+        return app
+          .model(validationHandler)
+          .post(
+            '/signup',
+            async (context) =>
+              await userHandler.userSignup(context, context.body as ISignupReq),
+            { body: 'user.signup.in' },
+          )
+          .get(`/stat`, () => 'Welcome to svc-user')
+          .get(`/`, (context) => userHandler.allUserPaginated(context))
+      }).onError(({ set }) => {
+        return errorHandler(set)
       })
   }
 }

@@ -19,3 +19,9 @@ export const ERROR_MSG_BY_CODE: IObjKeyString = {
   'P2002': `Database field unique constraint violation`,
   'S1001': `An error occurred during sign up process`,
 }
+
+export var ERROR_RESULT = {
+  code: 'E0000',
+  message: ERROR_MSG_BY_CODE['E0000'],
+  e: null,
+}
