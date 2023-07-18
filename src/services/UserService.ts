@@ -1,22 +1,20 @@
 import UserRepository from '@repositories/UserRepository'
-
-import { ISetup } from '@models/Model'
-import { ISignupReq, IEUser } from '@models/UserModel'
+import * as dto from '@dto/idx'
 
 export default class UserService {
   private Setup
   private UserRepository: UserRepository
 
-  constructor(setup: ISetup) {
+  constructor(setup: dto.ISetup) {
     this.Setup = setup
     this.UserRepository = new UserRepository(this.Setup)
   }
 
-  async allUserPaginated(): Promise<IEUser> {
+  async allUserPaginated(): Promise<dto.IData> {
     return await this.UserRepository.queryAllUserPaginated()
   }
 
-  async userSignup(req: ISignupReq): Promise<IEUser> {
+  async userSignup(req: dto.ISignupRequest): Promise<dto.IData> {
     return await this.UserRepository.queryInsertUser(req)
   }
 }

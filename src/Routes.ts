@@ -1,8 +1,7 @@
 import { Elysia } from 'elysia'
-import { ISignupReq } from '@models/UserModel'
 import { errorHandler } from '@handlers/Handler'
 import validationHandler from '@handlers/ValidationHandler'
-import { ISetup } from '@models/Model'
+import { ISetup } from '@dto/idx'
 
 import UserHandler from '@handlers/UserHandler'
 import UserService from '@services/UserService'
@@ -27,13 +26,13 @@ export default class Routes {
           .post(
             '/signup',
             async (context) =>
-              await userHandler.userSignup(context, context.body as ISignupReq),
+              await userHandler.userSignup(context, context.body),
             { body: 'user.signup.in' },
           )
           .get(`/stat`, () => 'Welcome to svc-user')
           .get(`/`, (context) => userHandler.allUserPaginated(context))
-      }).onError(({ set }) => {
-        return errorHandler(set)
+      }).onError((context) => {
+        return errorHandler(context, context.code)
       })
   }
 }

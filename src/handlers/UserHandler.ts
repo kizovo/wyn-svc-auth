@@ -5,16 +5,15 @@ import {
   errorResponse,
   successResponse,
 } from '@handlers/Handler'
-import { ISignupReq } from '@models/UserModel'
-import { ISetup } from '@models/Model'
 import { Context } from 'elysia'
 import { Exception } from '@sentry/browser'
+import * as dto from '@dto/idx'
 
 export default class UserHandler {
   private UserService: UserService
   private LogSentry
 
-  constructor(setup: ISetup, userService: UserService) {
+  constructor(setup: dto.ISetup, userService: UserService) {
     this.UserService = userService
     this.LogSentry = setup.log
   }
@@ -22,9 +21,8 @@ export default class UserHandler {
   async allUserPaginated(ctx: Context): Promise<IBasicResponse> {
     ctx.headers = Const.API.HEADERS
     const result = await this.UserService.allUserPaginated()
-    console.log(result)
     if (result.error) {
-      this.LogSentry.captureException(result.error.e)
+      this.LogSentry.captureException(result.error.e as Exception)
       ctx.set.status = 500
       return errorResponse(result.error.code, result.error.message)
     }
@@ -36,12 +34,15 @@ export default class UserHandler {
     return successResponse(result.data, '')
   }
 
-  async userSignup(ctx: Context, req: ISignupReq): Promise<IBasicResponse> {
+  async userSignup(
+    ctx: Context,
+    req: dto.ISignupRequest,
+  ): Promise<IBasicResponse> {
     ctx.headers = Const.API.HEADERS
     try {
       const result = await this.UserService.userSignup(req)
       if (result.error) {
-        this.LogSentry.captureException(result.error.e)
+        this.LogSentry.captureException(result.error.e as Exception)
         ctx.set.status = 500
         return errorResponse(result.error.code, result.error.message)
       }
