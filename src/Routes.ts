@@ -1,10 +1,10 @@
 import { Elysia } from 'elysia'
-import { errorHandler } from '@handlers/Handler'
-import validationHandler from '@handlers/ValidationHandler'
-import { ISetup } from '@dto/idx'
+import { ISetup } from '@dto/id.dto'
+import { errorHandler } from '@handlers/base.handler'
+import validationHandler from '@handlers/validation.handler'
 
-import UserHandler from '@handlers/UserHandler'
-import UserService from '@services/UserService'
+import UserHandler from '@/user/user.handler'
+import UserService from '@/user/user.service'
 
 export default class Routes {
   private App: Elysia

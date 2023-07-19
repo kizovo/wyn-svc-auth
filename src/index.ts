@@ -9,6 +9,7 @@ const app = new Elysia()
 const setupDB = new SetupDB()
 const setupLog = new SetupLog()
 const routes = new Routes(app, { db: setupDB, log: setupLog })
+
 const router = routes.router()
 
 app

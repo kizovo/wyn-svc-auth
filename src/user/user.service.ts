@@ -1,5 +1,5 @@
-import UserRepository from '@repositories/UserRepository'
-import * as dto from '@dto/idx'
+import UserRepository from '@/user/user.repository'
+import * as dto from '@dto/id.dto'
 
 export default class UserService {
   private Setup

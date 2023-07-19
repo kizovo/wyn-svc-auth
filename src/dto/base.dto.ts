@@ -12,11 +12,18 @@ export interface IData {
   error: IError | null
 }
 
-export interface IObjKeyString {
+export interface IJsonResponse {
+  code: string
+  data: object
+  message: string
+  success: boolean
+}
+
+export interface IErrorMsg {
   [key: string]: string
 }
 
-export interface IObjValNumber {
+export interface IErrorCode {
   [key: string]: number
 }
 

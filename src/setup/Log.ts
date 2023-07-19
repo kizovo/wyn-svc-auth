@@ -10,7 +10,7 @@ export default class Log {
     })
   }
 
-  captureException(e: Sentry.Exception) {
-    return Sentry.captureException(e)
+  captureException(e: unknown) {
+    return Sentry.captureException(e as Sentry.Exception)
   }
 }
