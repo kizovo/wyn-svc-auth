@@ -20,7 +20,8 @@ export default class UserRepository {
       })
       return this.output(result)
     } catch (e) {
-      return this.output(null, null, e as Exception)
+      const error: dto.IError = { code: '', message: '', e: e as Exception }
+      return this.output(null, error)
     }
   }
 
@@ -29,34 +30,42 @@ export default class UserRepository {
       const result = await this.DbMysql.users.create({ data: req })
       return this.output(result)
     } catch (e) {
-      return this.output(null, null, e as Exception)
+      const error: dto.IError = { code: '', message: '', e: e as Exception }
+      return this.output(null, error)
     }
   }
 
   private output(
     data: object | null,
     error: dto.IError | null = null,
-    e: Exception | null = null,
   ): dto.IData {
-    if (e) {
-      this.LogSentry.captureException(e as Exception)
-
-      const err = e as dto.IError
-      const code: string = C.ERROR_MSG_BY_CODE[err.code] ? err.code : 'E0000'
-      const message: string =
-        !C.ERROR_MSG_BY_CODE[err.code] && err.message
-          ? err.message
-          : C.ERROR_MSG_BY_CODE[err.code]
-
+    if (data) {
       return {
-        data: null,
-        error: err,
+        data,
+        error: null,
       }
     }
 
+    if (error && error.e) {
+      this.LogSentry.captureException(error.e as Exception)
+      error = error.e as dto.IError
+    }
+
+    let code = 'E0000'
+    let message = ''
+    let e = null
+    if (error) {
+      code = C.ERROR_MSG[error.code] ? error.code : 'E0000'
+      message =
+        !C.ERROR_MSG[error.code] && error.message
+          ? error.message
+          : C.ERROR_MSG[error.code]
+      e = error.e
+    }
+
     return {
-      data,
-      error: null,
+      data: null,
+      error: { code, message, e },
     }
   }
 }

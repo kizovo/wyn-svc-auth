@@ -30,10 +30,8 @@ export default class UserHandler {
     return jsonSuccess(result.data, '')
   }
 
-  async userSignup(
-    ctx: Context,
-    req: dto.ISignupRequest,
-  ): Promise<dto.IJsonResponse> {
+  async userSignup(ctx: Context): Promise<dto.IJsonResponse> {
+    const req: dto.ISignupRequest = ctx.body as dto.ISignupRequest
     ctx.headers = C.API.HEADERS
     try {
       const result = await this.UserService.userSignup(req)
@@ -51,7 +49,7 @@ export default class UserHandler {
     } catch (e: unknown) {
       this.LogSentry.captureException(e as Exception)
       ctx.set.status = 500
-      return jsonFail('S1001', C.ERROR_MSG_BY_CODE['S1001'])
+      return jsonFail('S1001', C.ERROR_MSG['S1001'])
     }
   }
 }

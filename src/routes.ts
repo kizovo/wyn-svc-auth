@@ -25,14 +25,18 @@ export default class Routes {
           .model(validationHandler)
           .post(
             '/signup',
-            async (context) =>
-              await userHandler.userSignup(context, context.body),
-            { body: 'user.signup.in' },
+            async (context) => await userHandler.userSignup(context),
+            {
+              body: 'user.signup.in',
+              error: ({ code, error, set }) => {
+                return errorHandler(code, error, set)
+              },
+            },
           )
           .get(`/stat`, () => 'Welcome to svc-user')
           .get(`/`, (context) => userHandler.allUserPaginated(context))
-      }).onError((context) => {
-        return errorHandler(context, context.code)
+      }).onError(({ code, error, set }) => {
+        return errorHandler(code, error, set)
       })
   }
 }

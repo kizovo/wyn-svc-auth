@@ -19,22 +19,21 @@ const jsonSuccess = (iData = {}, iMessage = '') => {
   }
 }
 
-function errorHandler(context: unknown, code: string) {
-  const ctx = context as Context
-  const statusCode = ctx.set.status ? code : 'INTERNAL_SERVER_ERROR'
-  if (!C.ERROR_CODE[statusCode]) {
-    ctx.set.status = 500
-    return jsonFail('500', C.ERROR_MSG_BY_CODE['500'])
+function errorHandler(code: string, error: Error, set: Context['set']) {
+  // code: 'VALIDATION' | 'NOT_FOUND' | 'INTERNAL_SERVER_ERROR'
+  // CODE_NUM: '400' | '404' | '500'
+  const CODE_NUM = C.ERROR_CODE[code].toString()
+  if (code === 'VALIDATION' && error) {
+    set.status = C.ERROR_CODE[code]
+    return jsonFail(CODE_NUM, error.message)
   }
-
-  const CODE_NUM = C.ERROR_CODE[statusCode].toString()
   if (code === 'NOT_FOUND') {
-    ctx.set.status = C.ERROR_CODE[code]
-    return jsonFail(CODE_NUM, C.ERROR_MSG_BY_CODE[CODE_NUM])
+    set.status = C.ERROR_CODE[code]
+    return jsonFail(CODE_NUM, C.ERROR_MSG[CODE_NUM])
   }
   if (code === 'INTERNAL_SERVER_ERROR') {
-    ctx.set.status = C.ERROR_CODE[code]
-    return jsonFail(CODE_NUM, C.ERROR_MSG_BY_CODE[CODE_NUM])
+    set.status = C.ERROR_CODE[code]
+    return jsonFail(CODE_NUM, C.ERROR_MSG[CODE_NUM])
   }
 }
 
