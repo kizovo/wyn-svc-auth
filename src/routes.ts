@@ -1,4 +1,4 @@
-import { Elysia } from 'elysia'
+import { Context, Elysia } from 'elysia'
 import { ISetup } from '@dto/id.dto'
 import { errorHandler } from '@handlers/base.handler'
 import validationHandler from '@handlers/validation.handler'
@@ -25,7 +25,7 @@ export default class Routes {
           .model(validationHandler)
           .post(
             '/signup',
-            async (context) => await userHandler.userSignup(context),
+            async ({ set, body }) => await userHandler.userSignup(set, body),
             {
               body: 'user.signup.in',
               error: ({ code, error, set }) => {
@@ -34,7 +34,7 @@ export default class Routes {
             },
           )
           .get(`/stat`, () => 'Welcome to svc-user')
-          .get(`/`, (context) => userHandler.allUserPaginated(context))
+          .get(`/`, ({ set }) => userHandler.allUserPaginated(set))
       }).onError(({ code, error, set }) => {
         return errorHandler(code, error, set)
       })

@@ -8,23 +8,19 @@ export interface IError {
 }
 
 export interface IData {
-  data: object | null
+  data: object
   error: IError | null
 }
 
 export interface IJsonResponse {
   code: string
-  data: object
+  data: object | null
+  error: string
   message: string
-  success: boolean
 }
 
 export interface IErrorMsg {
   [key: string]: string
-}
-
-export interface IErrorCode {
-  [key: string]: number
 }
 
 export interface ISetup {

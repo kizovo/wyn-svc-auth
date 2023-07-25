@@ -1,19 +1,4 @@
-import {
-  IData,
-  IError,
-  IJsonResponse,
-  IErrorMsg,
-  IErrorCode,
-  ISetup,
-} from './base.dto'
+import { IData, IError, IJsonResponse, IErrorMsg, ISetup } from './base.dto'
 import { ISignupRequest } from '../user/user.dto'
 
-export {
-  IData,
-  IError,
-  IJsonResponse,
-  IErrorMsg,
-  IErrorCode,
-  ISetup,
-  ISignupRequest,
-}
+export { IData, IError, IJsonResponse, IErrorMsg, ISetup, ISignupRequest }

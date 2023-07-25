@@ -1,7 +1,7 @@
 import UserService from '@/user/user.service'
 import * as C from '@/constant'
 import * as dto from '@dto/id.dto'
-import { jsonFail, jsonSuccess } from '@handlers/base.handler'
+import { errorHandler, jsonFail, jsonPass } from '@handlers/base.handler'
 import { Context } from 'elysia'
 import { Exception } from '@sentry/browser'
 
@@ -14,42 +14,37 @@ export default class UserHandler {
     this.LogSentry = setup.log
   }
 
-  async allUserPaginated(ctx: Context): Promise<dto.IJsonResponse> {
-    ctx.headers = C.API.HEADERS
+  async allUserPaginated(set: Context['set']): Promise<dto.IJsonResponse> {
+    set.headers = C.API.HEADERS
+
     const result = await this.UserService.allUserPaginated()
     if (result.error) {
       this.LogSentry.captureException(result.error.e as Exception)
-      ctx.set.status = 500
-      return jsonFail(result.error.code, result.error.message)
+      return errorHandler(result.error.code, Error(result.error.message), set)
     }
 
-    if (result.data == null) {
-      return jsonSuccess()
-    }
-
-    return jsonSuccess(result.data, '')
+    return jsonPass(result.data, '')
   }
 
-  async userSignup(ctx: Context): Promise<dto.IJsonResponse> {
-    const req: dto.ISignupRequest = ctx.body as dto.ISignupRequest
-    ctx.headers = C.API.HEADERS
+  async userSignup(
+    set: Context['set'],
+    body: Context['body'],
+  ): Promise<dto.IJsonResponse> {
+    const req: dto.ISignupRequest = body as dto.ISignupRequest
+    set.headers = C.API.HEADERS
+
     try {
       const result = await this.UserService.userSignup(req)
+
       if (result.error) {
         this.LogSentry.captureException(result.error.e as Exception)
-        ctx.set.status = 500
-        return jsonFail(result.error.code, result.error.message)
+        return errorHandler(result.error.code, Error(result.error.message), set)
       }
 
-      if (result.data == null) {
-        return jsonFail('500', 'Failed to Sign Up')
-      }
-
-      return jsonSuccess(result.data, 'Success Sign Up')
+      return jsonPass(result.data, 'Success Sign Up')
     } catch (e: unknown) {
       this.LogSentry.captureException(e as Exception)
-      ctx.set.status = 500
-      return jsonFail('S1001', C.ERROR_MSG['S1001'])
+      return errorHandler('S1001', Error(C.ERROR_MSG['S1001']), set)
     }
   }
 }
