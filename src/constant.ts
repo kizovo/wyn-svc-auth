@@ -1,5 +1,5 @@
 // Put all global constant here, especially for simple explicit value that repeatedly used throughout files.
-import * as dto from '@dto/id.dto'
+import * as dto from '@base/base.dto'
 
 export const API = {
   HEADERS: {

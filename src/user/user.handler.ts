@@ -1,7 +1,8 @@
 import UserService from '@/user/user.service'
 import * as C from '@/constant'
-import * as dto from '@dto/id.dto'
-import { errorHandler, jsonFail, jsonPass } from '@handlers/base.handler'
+import * as dto from '@base/base.dto'
+import { errorHandler, jsonPass } from '@base/base.handler'
+import { ISignupRequest } from '@/user/user.dto'
 import { Context } from 'elysia'
 import { Exception } from '@sentry/browser'
 
@@ -30,7 +31,7 @@ export default class UserHandler {
     set: Context['set'],
     body: Context['body'],
   ): Promise<dto.IJsonResponse> {
-    const req: dto.ISignupRequest = body as dto.ISignupRequest
+    const req: ISignupRequest = body as ISignupRequest
     set.headers = C.API.HEADERS
 
     try {

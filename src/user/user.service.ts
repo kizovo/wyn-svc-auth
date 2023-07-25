@@ -1,5 +1,6 @@
-import UserRepository from '@/user/user.repository'
-import * as dto from '@dto/id.dto'
+import UserRepository from '@/user/user.query'
+import * as dto from '@base/base.dto'
+import { ISignupRequest } from '@/user/user.dto'
 
 export default class UserService {
   private Setup
@@ -14,7 +15,7 @@ export default class UserService {
     return await this.UserRepository.queryAllUserPaginated()
   }
 
-  async userSignup(req: dto.ISignupRequest): Promise<dto.IData> {
+  async userSignup(req: ISignupRequest): Promise<dto.IData> {
     return await this.UserRepository.queryInsertUser(req)
   }
 }

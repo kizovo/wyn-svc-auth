@@ -1,5 +1,14 @@
 import * as C from '@/constant'
-import { Context } from 'elysia'
+import { Context, t } from 'elysia'
+
+const validationHandler = {
+  'user.signup.in': t.Object({
+    email: t.String(),
+    password: t.String({
+      minLength: 8,
+    }),
+  }),
+}
 
 function errorHandler(code: string, error: Error, set: Context['set']) {
   // code: 'VALIDATION' | 'NOT_FOUND' | 'INTERNAL_SERVER_ERROR'
@@ -39,4 +48,4 @@ const jsonPass = (iData = {}, iMessage = '') => {
   }
 }
 
-export { jsonFail, jsonPass, errorHandler }
+export { jsonFail, jsonPass, errorHandler, validationHandler }

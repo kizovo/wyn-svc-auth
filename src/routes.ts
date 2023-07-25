@@ -1,7 +1,6 @@
-import { Context, Elysia } from 'elysia'
-import { ISetup } from '@dto/id.dto'
-import { errorHandler } from '@handlers/base.handler'
-import validationHandler from '@handlers/validation.handler'
+import { Elysia } from 'elysia'
+import { ISetup } from '@base/base.dto'
+import { errorHandler, validationHandler } from '@base/base.handler'
 
 import UserHandler from '@/user/user.handler'
 import UserService from '@/user/user.service'

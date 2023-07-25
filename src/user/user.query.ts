@@ -1,6 +1,7 @@
 import * as C from '@/constant'
+import * as dto from '@base/base.dto'
+import { ISignupRequest } from '@/user/user.dto'
 import { Exception } from '@sentry/browser'
-import * as dto from '@dto/id.dto'
 
 export default class UserRepository {
   private DbMysql
@@ -25,7 +26,7 @@ export default class UserRepository {
     }
   }
 
-  async queryInsertUser(req: dto.ISignupRequest): Promise<dto.IData> {
+  async queryInsertUser(req: ISignupRequest): Promise<dto.IData> {
     try {
       const result = await this.DbMysql.users.create({ data: req })
       return this.pass(result)
