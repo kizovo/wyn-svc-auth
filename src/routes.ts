@@ -19,12 +19,12 @@ export default class Routes {
     const userHandler = new UserHandler(this.Setup, userService)
 
     return () =>
-      this.App.group(`api/users/v1`, (app) => {
+      this.App.group(`users/v1`, (app) => {
         return app
           .model(validationHandler)
           .post(
             '/signup',
-            async ({ set, body }) => await userHandler.userSignup(set, body),
+            async ({ set, body }) => await userHandler.addUser(set, body),
             {
               body: 'user.signup.in',
               error: ({ code, error, set }) => {
@@ -33,7 +33,7 @@ export default class Routes {
             },
           )
           .get(`/stat`, () => 'Welcome to svc-user')
-          .get(`/`, ({ set }) => userHandler.allUserPaginated(set))
+          .get(`/`, ({ set }) => userHandler.listUser(set))
       }).onError(({ code, error, set }) => {
         return errorHandler(code, error, set)
       })

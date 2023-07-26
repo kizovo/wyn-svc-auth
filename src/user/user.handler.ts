@@ -15,10 +15,10 @@ export default class UserHandler {
     this.LogSentry = setup.log
   }
 
-  async allUserPaginated(set: Context['set']): Promise<dto.IJsonResponse> {
+  async listUser(set: Context['set']): Promise<dto.IJsonResponse> {
     set.headers = C.API.HEADERS
 
-    const result = await this.UserService.allUserPaginated()
+    const result = await this.UserService.listUser()
     if (result.error) {
       this.LogSentry.captureException(result.error.e as Exception)
       return errorHandler(result.error.code, Error(result.error.message), set)
@@ -27,7 +27,7 @@ export default class UserHandler {
     return jsonPass(result.data, '')
   }
 
-  async userSignup(
+  async addUser(
     set: Context['set'],
     body: Context['body'],
   ): Promise<dto.IJsonResponse> {
@@ -35,7 +35,7 @@ export default class UserHandler {
     set.headers = C.API.HEADERS
 
     try {
-      const result = await this.UserService.userSignup(req)
+      const result = await this.UserService.addUser(req)
 
       if (result.error) {
         this.LogSentry.captureException(result.error.e as Exception)

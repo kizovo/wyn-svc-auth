@@ -3,7 +3,7 @@ import * as dto from '@base/base.dto'
 import { ISignupRequest } from '@/user/user.dto'
 import { Exception } from '@sentry/browser'
 
-export default class UserRepository {
+export default class UserQuery {
   private DbMysql
   private LogSentry
 
@@ -12,7 +12,7 @@ export default class UserRepository {
     this.LogSentry = setup.log
   }
 
-  async queryAllUserPaginated(): Promise<dto.IData> {
+  async list(): Promise<dto.IData> {
     try {
       const result = await this.DbMysql.users.findMany({
         select: {
@@ -26,7 +26,7 @@ export default class UserRepository {
     }
   }
 
-  async queryInsertUser(req: ISignupRequest): Promise<dto.IData> {
+  async add(req: ISignupRequest): Promise<dto.IData> {
     try {
       const result = await this.DbMysql.users.create({ data: req })
       return this.pass(result)
