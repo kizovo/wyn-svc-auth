@@ -1,61 +1,37 @@
 import * as C from '@/constant'
 import * as dto from '@base/base.dto'
-import { ISignupRequest } from '@/user/user.dto'
-import { Exception } from '@sentry/browser'
+import { ISignupReq } from '@/user/user.dto'
 
 export default class UserQuery {
+  private Db
   private DbMysql
-  private LogSentry
 
   constructor(setup: dto.ISetup) {
-    this.DbMysql = setup.db.dbMysql()
-    this.LogSentry = setup.log
+    this.Db = setup.db
+    this.DbMysql = this.Db.dbMysql()
   }
 
-  async list(): Promise<dto.IData> {
-    try {
-      const result = await this.DbMysql.users.findMany({
+  async list(q: dto.IPaginationReq): Promise<object> {
+    let result = await this.Db.wrapException(async () => {
+      return await this.DbMysql.users.findMany({
+        take: Number(q.page_size),
+        skip: Number(q.page_no),
         select: {
           email: true,
         },
       })
-      return this.pass(result)
-    } catch (e) {
-      const error: dto.IError = { code: '', message: '', e: e as Exception }
-      return this.fail(error)
-    }
+    })
+
+    return this.mapResult(result)
   }
 
-  async add(req: ISignupRequest): Promise<dto.IData> {
-    try {
-      const result = await this.DbMysql.users.create({ data: req })
-      return this.pass(result)
-    } catch (e) {
-      const error: dto.IError = { code: '', message: '', e: e as Exception }
-      return this.fail(error)
-    }
+  async add(req: ISignupReq): Promise<object> {
+    return this.Db.wrapException(async () => {
+      return await this.DbMysql.users.create({ data: req })
+    })
   }
 
-  private pass(data: object): dto.IData {
-    return {
-      data,
-      error: null,
-    }
-  }
-
-  private fail(error: dto.IError): dto.IData {
-    if (error.e) {
-      this.LogSentry.captureException(error.e as Exception)
-      error = error.e as dto.IError
-    }
-
-    const code = error.code !== undefined ? error.code : 'E0000'
-    const message = error.message !== undefined ? C.ERROR_MSG[code] : ''
-    const e = error.e || null
-
-    return {
-      data: {},
-      error: { code, message, e },
-    }
+  mapResult(data: object): dto.IData {
+    return { data, error: null }
   }
 }

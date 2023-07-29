@@ -6,8 +6,8 @@ import UserHandler from '@/user/user.handler'
 import UserService from '@/user/user.service'
 
 export default class Routes {
-  private App: Elysia
-  private Setup: ISetup
+  private App
+  private Setup
 
   constructor(app: Elysia, setup: ISetup) {
     this.App = app
@@ -19,23 +19,24 @@ export default class Routes {
     const userHandler = new UserHandler(this.Setup, userService)
 
     return () =>
-      this.App.group(`users/v1`, (app) => {
-        return app
-          .model(validationHandler)
-          .post(
-            '/signup',
-            async ({ set, body }) => await userHandler.addUser(set, body),
-            {
-              body: 'user.signup.in',
-              error: ({ code, error, set }) => {
-                return errorHandler(code, error, set)
+      this.App.get(`/stat`, () => 'Welcome to svc-user')
+        .group(`users/v1`, (app) => {
+          return app
+            .model(validationHandler)
+            .get(`/list`, ({ set, query }) => userHandler.listUser(set, query))
+            .post(
+              '/signup',
+              async ({ set, body }) => await userHandler.addUser(set, body),
+              {
+                body: 'user.signup.in',
+                error: ({ code, error, set }) => {
+                  return errorHandler(code, error, set)
+                },
               },
-            },
-          )
-          .get(`/stat`, () => 'Welcome to svc-user')
-          .get(`/`, ({ set }) => userHandler.listUser(set))
-      }).onError(({ code, error, set }) => {
-        return errorHandler(code, error, set)
-      })
+            )
+        })
+        .onError(({ code, error, set }) => {
+          return errorHandler(code, error, set)
+        })
   }
 }

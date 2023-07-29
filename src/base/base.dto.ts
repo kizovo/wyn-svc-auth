@@ -4,7 +4,6 @@ import SetupLog from '@setup/Log'
 export interface IError {
   code: string
   message: string
-  e: unknown
 }
 
 export interface IData {
@@ -26,4 +25,9 @@ export interface IErrorMsg {
 export interface ISetup {
   db: SetupDB
   log: SetupLog
+}
+
+export interface IPaginationReq {
+  page_no: string
+  page_size: string
 }

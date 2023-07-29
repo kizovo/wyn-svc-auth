@@ -1,6 +1,6 @@
 import * as dto from '@base/base.dto'
+import { ISignupReq } from '@/user/user.dto'
 import UserQuery from '@/user/user.query'
-import { ISignupRequest } from '@/user/user.dto'
 
 export default class UserService {
   private Setup
@@ -11,11 +11,11 @@ export default class UserService {
     this.UserQuery = new UserQuery(this.Setup)
   }
 
-  async listUser(): Promise<dto.IData> {
-    return await this.UserQuery.list()
+  async listUser(q: object): Promise<dto.IData> {
+    return (await this.UserQuery.list(q as dto.IPaginationReq)) as dto.IData
   }
 
-  async addUser(req: ISignupRequest): Promise<dto.IData> {
-    return await this.UserQuery.add(req)
+  async addUser(req: ISignupReq): Promise<dto.IData> {
+    return (await this.UserQuery.add(req)) as dto.IData
   }
 }

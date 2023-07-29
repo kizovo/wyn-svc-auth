@@ -1,4 +1,4 @@
-export interface ISignupRequest {
+export interface ISignupReq {
   email: string
   password: string
 }
