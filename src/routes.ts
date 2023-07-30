@@ -24,6 +24,7 @@ export default class Routes {
           return app
             .model(validationHandler)
             .get(`/list`, ({ set, query }) => userHandler.listUser(set, query))
+            .post(`/list`, ({ set, body }) => userHandler.detailUser(set, body))
             .post(
               '/signup',
               async ({ set, body }) => await userHandler.addUser(set, body),

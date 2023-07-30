@@ -1,6 +1,5 @@
-import * as C from '@/constant'
 import * as dto from '@base/base.dto'
-import { ISignupReq } from '@/user/user.dto'
+import { ISignupReq, IUserDetailReq } from '@/user/user.dto'
 
 export default class UserQuery {
   private Db
@@ -18,6 +17,21 @@ export default class UserQuery {
         skip: Number(q.page_no),
         select: {
           email: true,
+        },
+      })
+    })
+
+    return this.mapResult(result)
+  }
+
+  async detail(req: IUserDetailReq): Promise<object> {
+    let result = await this.Db.wrapException(async () => {
+      return await this.DbMysql.users.findMany({
+        select: {
+          email: true,
+        },
+        where: {
+          id: { in: req.id },
         },
       })
     })
