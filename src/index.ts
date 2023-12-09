@@ -3,7 +3,7 @@ import { swagger } from '@elysiajs/swagger'
 import config from '@/config'
 import routes from '@/routes'
 import SetupDB from '@setup/Db'
-import SetupLog from '@setup/Log'
+import SetupLog from '@/setup/LogSentry'
 
 const app = new Elysia()
 const setupDB = new SetupDB()

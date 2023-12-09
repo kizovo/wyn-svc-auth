@@ -11,8 +11,10 @@ export default class UserService {
     this.UserQuery = new UserQuery(this.Setup)
   }
 
-  async listUser(q: object): Promise<dto.IData> {
-    return (await this.UserQuery.list(q as dto.IPaginationReq)) as dto.IData
+  async listUser(q: object): Promise<dto.IDataPagination> {
+    return (await this.UserQuery.list(
+      q as dto.IPaginationReq,
+    )) as dto.IDataPagination
   }
 
   async detailUser(req: IUserDetailReq): Promise<dto.IData> {

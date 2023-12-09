@@ -1,9 +1,8 @@
 import { Elysia } from 'elysia'
 import { ISetup } from '@base/base.dto'
-import { errorHandler, validationHandler } from '@base/base.handler'
+import { errorHandler } from '@base/base.handler'
 
-import UserHandler from '@/user/user.handler'
-import UserService from '@/user/user.service'
+import UserRoutes from './user/user.routes'
 
 export default class Routes {
   private App
@@ -15,29 +14,13 @@ export default class Routes {
   }
 
   router() {
-    const userService = new UserService(this.Setup)
-    const userHandler = new UserHandler(this.Setup, userService)
+    const userRoutes = new UserRoutes(this.App, this.Setup)
 
     return () =>
       this.App.get(`/stat`, () => 'Welcome to svc-user')
-        .group(`users/v1`, (app) => {
-          return app
-            .model(validationHandler)
-            .get(`/list`, ({ set, query }) => userHandler.listUser(set, query))
-            .post(`/list`, ({ set, body }) => userHandler.detailUser(set, body))
-            .post(
-              '/signup',
-              async ({ set, body }) => await userHandler.addUser(set, body),
-              {
-                body: 'user.signup.in',
-                error: ({ code, error, set }) => {
-                  return errorHandler(code, error, set)
-                },
-              },
-            )
-        })
-        .onError(({ code, error, set }) => {
-          return errorHandler(code, error, set)
-        })
+        .use(userRoutes.router())
+        .onError(({ code, error, set }) =>
+          errorHandler({ code, message: error.message }, set),
+        )
   }
 }

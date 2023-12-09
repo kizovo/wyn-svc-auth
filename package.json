@@ -11,16 +11,16 @@
     "format": "prettier --write ."
   },
   "dependencies": {
-    "@elysiajs/swagger": "^0.5.2",
+    "@elysiajs/swagger": "0.6",
     "@prisma/client": "^4.16.2",
     "@sentry/browser": "^7.58.0",
-    "elysia": "latest"
+    "elysia": "0.6"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
-    "bun-types": "latest",
-    "eslint": "^8.45.0",
+    "bun-types": "0.7.3",
+    "eslint": "^8.47.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^5.0.0",
     "prettier": "3.0.0",

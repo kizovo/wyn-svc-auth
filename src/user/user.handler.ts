@@ -3,63 +3,49 @@ import * as C from '@/constant'
 import * as dto from '@base/base.dto'
 import { errorHandler, jsonPass } from '@base/base.handler'
 import { IUserDetailReq, ISignupReq } from '@/user/user.dto'
-import { Context } from 'elysia'
 
 export default class UserHandler {
   private UserService: UserService
-  private LogSentry
+  private Log
 
   constructor(setup: dto.ISetup, userService: UserService) {
     this.UserService = userService
-    this.LogSentry = setup.log
+    this.Log = setup.log
   }
 
-  async listUser(
-    set: Context['set'],
-    q: Context['query'],
-  ): Promise<dto.IJsonResponse> {
+  async listUser(set: dto.IHttpSet, query: object): Promise<dto.IJsonResponse> {
     set.headers = C.API.HEADERS
-
-    const result = await this.UserService.listUser(q)
-    if (result.error) {
-      return errorHandler(result.error.code, Error(result.error.message), set)
+    const res = await this.UserService.listUser(query)
+    if (res.error) {
+      return errorHandler(res.error, set)
     }
-
-    return jsonPass(result.data, 'Success Get User List')
+    return jsonPass(res.pagination, res.data, 'Success Get User List')
   }
 
   async detailUser(
-    set: Context['set'],
-    body: Context['body'],
+    set: dto.IHttpSet,
+    body: unknown,
   ): Promise<dto.IJsonResponse> {
-    const req = body as IUserDetailReq
     set.headers = C.API.HEADERS
-
-    const result = await this.UserService.detailUser(req)
-    if (result.error) {
-      return errorHandler(result.error.code, Error(result.error.message), set)
-    }
-
-    return jsonPass(result.data, 'Success Get User Detail')
+    const req = body as IUserDetailReq
+    const res = await this.UserService.detailUser(req)
+    return res.error
+      ? errorHandler(res.error, set)
+      : jsonPass(res.data, 'Success Get User Detail')
   }
 
-  async addUser(
-    set: Context['set'],
-    body: Context['body'],
-  ): Promise<dto.IJsonResponse> {
+  async addUser(set: dto.IHttpSet, body: unknown): Promise<dto.IJsonResponse> {
     const req = body as ISignupReq
     set.headers = C.API.HEADERS
-
     try {
-      const result = await this.UserService.addUser(req)
-      if (result.error) {
-        return errorHandler(result.error.code, Error(result.error.message), set)
-      }
-
-      return jsonPass(result.data, 'Success Sign Up')
+      const res = await this.UserService.addUser(req)
+      return res.error
+        ? errorHandler(res.error, set)
+        : jsonPass(res.data, 'Success Sign Up')
     } catch (e) {
-      this.LogSentry.captureException(e)
-      return errorHandler('S1001', Error(C.ERROR_MSG['S1001']), set)
+      this.Log.captureException(e)
+      const customErr = { code: 'S1001', message: C.ERROR_MSG['S1001'] }
+      return errorHandler(customErr, set)
     }
   }
 }

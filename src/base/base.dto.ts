@@ -1,5 +1,5 @@
 import SetupDB from '@setup/Db'
-import SetupLog from '@setup/Log'
+import SetupLogSentry from '@/setup/LogSentry'
 
 export interface IError {
   code: string
@@ -11,10 +11,23 @@ export interface IData {
   error: IError | null
 }
 
+export interface IDataPagination {
+  pagination: object
+  data: object
+  error: IError | null
+}
+
+export interface IHttpSet {
+  headers: Record<string, string>
+  status?: number
+  redirect?: string
+}
+
 export interface IJsonResponse {
   code: string
-  data: object | null
-  error: string
+  pagination?: object
+  data?: object | null
+  error?: string
   message: string
 }
 
@@ -24,10 +37,16 @@ export interface IErrorMsg {
 
 export interface ISetup {
   db: SetupDB
-  log: SetupLog
+  log: SetupLogSentry
 }
 
 export interface IPaginationReq {
-  page_no: string
-  page_size: string
+  pg_num: string
+  pg_size: string
+}
+
+export interface IPage {
+  pgNum: number
+  take: number
+  skip: number
 }

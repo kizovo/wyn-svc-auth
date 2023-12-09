@@ -1,7 +1,7 @@
 import config from '@/config'
 import * as Sentry from '@sentry/browser'
 
-export default class Log {
+export default class LogSentry {
   constructor() {
     Sentry.init({
       environment: config.APP_ENV,
