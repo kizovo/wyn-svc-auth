@@ -1,5 +1,6 @@
 import * as dto from '@base/base.dto'
-import { isNumeric } from '@base/base.lib'
+import * as C from '@/constant'
+import { isStrIsNumeric } from '@base/base.lib'
 import { ISignupReq, IUserDetailReq } from '@/user/user.dto'
 
 export default class UserQuery {
@@ -12,8 +13,12 @@ export default class UserQuery {
   }
 
   calculatePage(q: dto.IPaginationReq): dto.IPage {
-    const pgNum = q.pg_num && isNumeric(q.pg_num) ? Number(q.pg_num) : 1
-    const take = q.pg_size && isNumeric(q.pg_size) ? Number(q.pg_size) : 5
+    const pgNum =
+      q.pg_num && isStrIsNumeric(q.pg_num) ? Number(q.pg_num) : C.DEFAULT.PG_NUM
+    const take =
+      q.pg_size && isStrIsNumeric(q.pg_size)
+        ? Number(q.pg_size)
+        : C.DEFAULT.PG_SIZE
     const skip = pgNum - 1 >= 0 ? (pgNum - 1) * take : 0
 
     return { pgNum, take, skip }

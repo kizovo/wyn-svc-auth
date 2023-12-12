@@ -7,6 +7,11 @@ export const API = {
   },
 }
 
+export const DEFAULT = {
+  PG_NUM: 1,
+  PG_SIZE: 5,
+}
+
 export const ERROR_MSG: dto.IErrorMsg = {
   '404': `We looked everywhere, but it seems the file you're searching for is on vacation. It left no forwarding address!`,
   '500': `Uh-oh! Our server gremlins are up to their mischief again. They've hidden the requested page in a parallel universe. We're on it!`,

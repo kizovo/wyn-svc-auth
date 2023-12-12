@@ -1,11 +1,12 @@
-# Wyn: Service User (Work In Progress)
-This service is a part of larger ecosystem which is Wyn project. The service serves things related to user registration, authentication, verification, etc. 
+# Wyn: Service Auth (Work In Progress)
+This service is a part of larger ecosystem which is in Wyn project. 
+It serves things related to account registration, authentication, verification, etc. 
 
-Service Name: svc-user  
+Service Name: svc-auth  
 Port used: 3001
 
 ## Getting Started
-To get started this service, simply follow this step using terminal:
+To get started with this service, simply follow this step using CLI:
 
 1. Clone the project
    ```
@@ -23,13 +24,13 @@ To get started this service, simply follow this step using terminal:
   - Install docker desktop https://www.docker.com/products/docker-desktop/
   - Running this command to create container, image & runs it:
      ```
-     docker run --name <container_name> -p 3306:3306 -e "MYSQL_ROOT_PASSWORD=<root_password>" -e "MYSQL_USER=<username>" -e "MYSQL_PASSWORD=<password>" -e "MYSQL_DATABASE=<database_name>" -v ~/mysql/db/:/var/lib/mysql/ -v ~/mysql/init/:/docker-entrypoint-initdb.d/ -d mysql
+     $ docker run --name <container_name> -p 3306:3306 -e "MYSQL_ROOT_PASSWORD=<root_password>" -e "MYSQL_USER=<username>" -e "MYSQL_PASSWORD=<password>" -e "MYSQL_DATABASE=<database_name>" -v ~/mysql/db/:/var/lib/mysql/ -v ~/mysql/init/:/docker-entrypoint-initdb.d/ -d mysql
      ```
   - if you only want to running the existing docker container:
      ```
-     docker start <container_name>
+     $ docker start <container_name>
      ```
-  - Setup shadow database by entering MySQL container environment:
+  - Need to setup shadow database by entering MySQL container environment:
      ```
      docker exec -it mysql-container mysql -u root -p
      CREATE DATABASE <database_name>_shadow;
@@ -40,15 +41,20 @@ To get started this service, simply follow this step using terminal:
 
 5. Update DATABASE_URL value accordingly on .env file
 6. Run migration files
-   ```bash
-   bunx prisma migrate dev --name init (preferred way)
-   prisma db push (alternate if above command doesn't work)
+   ```
+   $ bunx prisma migrate dev --name init (preferred way)
+   $ prisma db push (alternate if above command doesn't work)
    ```
 
 ## Development
-To start the development server run:
-```bash
-bun run dev
+To start server:
+```
+$ bun run dev
+```
+
+## Testing
+```
+$ bun test
 ```
 
 Open http://localhost:<server_port>/ with your browser to see the result.
@@ -69,7 +75,7 @@ Open http://localhost:<server_port>/ with your browser to see the result.
    ```
 3. Function
    - use camelCase
-   - use descriptive and meaningful names that represent the class's purpose or behavior
+   - use descriptive and meaningful names that represent the class purposes or behavior
    ```javascript
    function calculateAverage(a: number, b: number): number {
       return (a + b) / 2;
@@ -85,39 +91,20 @@ Open http://localhost:<server_port>/ with your browser to see the result.
       }
    }
    ```
-5. File & folder naming for: **Models**
-   - Use the name of the entity followed by "Model" suffix.
-   - Use PascalCase (also known as UpperCamelCase) for filenames.
-   - End the filename with ".ts" to indicate it's a TypeScript file.   
-   Example: **UserModel.ts**
-6. File & folder naming for: **Handlers**
-   - Use the name of the entity followed by "Handler" suffix.
-   - Use PascalCase for filenames.
-   - End the filename with ".ts" to indicate it's a TypeScript file.   
-   Example: **UserHandler.ts**
-7. File & folder naming for: **Services**
-   - Use the name of the entity followed by "Service" suffix.
-   - Use PascalCase for filenames.
-   - End the filename with ".ts" to indicate it's a TypeScript file.   
-   Example: **UserService.ts**
-8. File & folder naming for: **Repositories**
-   - Use the name of the entity followed by "Repository" suffix.
-   - Use PascalCase for filenames.
-   - End the filename with ".ts" to indicate it's a TypeScript file.   
-   Example: **UserRepository.ts**
 
 ## Basic Architecture
-- Application start from file: **src/index.ts**
-- API route to define the URL path at: **src/Routes.ts**
-- All env loaded at: **src/config.ts**
-- All global constant at: **src/constant.ts**
-- Dependencies Injection at: **src/Setup.ts**   
+- Application starting point: **src/index.ts**
+- API route URL path at: **src/routes.ts**
+- Config env preloaded at: **src/config.ts**
+- Put global constant here: **src/constant.ts**
+- Dependency Injection for 3rd party at: **src/Setup.ts**   
+
 ### Flow:
-  A request hit an endpoint that the path defined by **routes**, the request then will be catch by **handlers**. One route only have one handler. Handler will act as a **request sanitizer** before it pass to a service and the response callback will be formatted as a standarized response before it sent back to the client. Handler passes the request to a service. One handler only have one service, but one service may call several repositories. **Repositories** handle query to database.   
+  A request send to an endpoint that the path defined in **routes**, the request then catch by **handlers**. One route only have one handler. Handler will act as a **request sanitizer & validation** before it pass to a service and the response callback will be standarized across platform before sent it back to the client. Handler passes the request to a service. One handler only have one service, but one service may call several function or queries. **Queries** a query wrapper for querying database.
 
 ---
 ### Disclaimer   
-Do not use this repository for production, if you insists to use it, you should known your own risks.
+Do not use this repository for production, if you insists to use, known your own risks.
 
 ---   
    
