@@ -4,12 +4,12 @@ import { isStrIsNumeric } from '@base/base.lib'
 import { ISignupReq, IUserDetailReq } from '@/user/user.dto'
 
 export default class UserQuery {
-  private Db
-  private DbMysql
+  private db
+  private dbMysql
 
   constructor(setup: dto.ISetup) {
-    this.Db = setup.db
-    this.DbMysql = this.Db.dbMysql()
+    this.db = setup.db
+    this.dbMysql = this.db.dbMysql()
   }
 
   calculatePage(q: dto.IPaginationReq): dto.IPage {
@@ -24,17 +24,17 @@ export default class UserQuery {
     return { pgNum, take, skip }
   }
 
-  async list(q: dto.IPaginationReq): Promise<object> {
+  async qListUser(q: dto.IPaginationReq): Promise<object> {
     let { take, pgNum, skip } = this.calculatePage(q)
-    let { result, total } = await this.Db.wrapException(async () => {
-      const result = await this.DbMysql.users.findMany({
+    let { result, total } = await this.db.wrapException(async () => {
+      const result = await this.dbMysql.users.findMany({
         take,
         skip,
         select: {
           email: true,
         },
       })
-      const total = await this.DbMysql.users.count()
+      const total = await this.dbMysql.users.count()
       return { result, total }
     })
 
@@ -48,14 +48,14 @@ export default class UserQuery {
     return this.mapResultWithPagination(pagination, result)
   }
 
-  async detail(req: IUserDetailReq): Promise<object> {
-    let result = await this.Db.wrapException(async () => {
-      return await this.DbMysql.users.findMany({
+  async qDetailUser(r: IUserDetailReq): Promise<object> {
+    let result = await this.db.wrapException(async () => {
+      return await this.dbMysql.users.findMany({
         select: {
           email: true,
         },
         where: {
-          id: { in: req.id },
+          id: { in: r.id },
         },
       })
     })
@@ -63,9 +63,9 @@ export default class UserQuery {
     return this.mapResult(result)
   }
 
-  async add(req: ISignupReq): Promise<object> {
-    return this.Db.wrapException(async () => {
-      return await this.DbMysql.users.create({ data: req })
+  async qAddUser(r: ISignupReq): Promise<object> {
+    return this.db.wrapException(async () => {
+      return await this.dbMysql.users.create({ data: r })
     })
   }
 

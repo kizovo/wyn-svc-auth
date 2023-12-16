@@ -1,7 +1,10 @@
 import { t } from 'elysia'
 
-export const validationHandler = {
-  'user.signup.in': t.Object({
+export const validate = {
+  'user.detail': t.Object({
+    id: t.Array(t.Number()),
+  }),
+  'user.signup': t.Object({
     email: t.String(),
     password: t.String({
       minLength: 8,
