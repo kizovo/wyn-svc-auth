@@ -19,7 +19,7 @@ export default class UserHandler {
     if (res.error) {
       return errorHandler(res.error, set)
     }
-    return jsonPass(res.pagination, res.data, 'Success Get User List')
+    return jsonPass(res.data, 'Success Get User List', res.pagination)
   }
 
   async detailUser(
@@ -45,7 +45,7 @@ export default class UserHandler {
       const res = await this.svc.addUser(req)
       return res.error
         ? errorHandler(res.error, set)
-        : jsonPass({}, res.data, 'Success Sign Up')
+        : jsonPass(res.data, 'Success Sign Up')
     } catch (e) {
       this.log.captureException(e)
       const customErr = { code: 'S1001', message: C.ERROR_MSG['S1001'] }

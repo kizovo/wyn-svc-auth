@@ -5,20 +5,20 @@ import UserService from '@/user/user.service'
 import { validate } from '@/user/user.validate'
 
 export default class UserRoutes {
-  private App
-  private Setup
+  private app
+  private setup
 
   constructor(app: Elysia, setup: dto.ISetup) {
-    this.App = app
-    this.Setup = setup
+    this.app = app
+    this.setup = setup
   }
 
   router() {
-    const s = new UserService(this.Setup)
-    const h = new UserHandler(this.Setup, s)
+    const s = new UserService(this.setup)
+    const h = new UserHandler(this.setup, s)
 
     return () =>
-      this.App.group(`/users/v1`, (app: any) =>
+      this.app.group(`/users/v1`, (app: any) =>
         app
           .model(validate)
           .get(`/list`, ({ set, query }: any) => h.listUser(set, query))

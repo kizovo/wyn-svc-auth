@@ -24,10 +24,14 @@ export interface IHttpSet {
 }
 
 export interface IJsonResponse {
-  code: string
+  meta: IMeta
   pagination?: object
   data?: object | null
-  error?: string
+}
+
+export interface IMeta {
+  code: string
+  status: string
   message: string
 }
 

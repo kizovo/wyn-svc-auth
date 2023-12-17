@@ -22,20 +22,30 @@ function errorHandler(error: IError, set: IHttpSet) {
 
   // Catching error: UNKNOWN & INTERNAL_SERVER_ERROR
   set.status = 500
+
   return jsonFail(CODE_NUM, C.ERROR_MSG[CODE_NUM] ?? err.message)
 }
 
-const jsonFail = (iCode = '500', iMessage = '') => ({
-  code: iCode,
-  error: iMessage,
-  message: '',
-})
-
-const jsonPass = (iPagination = {}, iData = {}, iMessage = '') => {
+const jsonFail = (iCode = '500', iMessage = '') => {
   let res: IJsonResponse = {
-    code: '00000',
+    meta: {
+      code: iCode,
+      status: 'error',
+      message: iMessage,
+    },
+    data: {},
+  }
+  return res
+}
+
+const jsonPass = (iData = {}, iMessage = '', iPagination = {}) => {
+  let res: IJsonResponse = {
+    meta: {
+      code: '000',
+      status: 'success',
+      message: iMessage,
+    },
     data: iData,
-    message: iMessage,
   }
   if (Object.keys(iPagination).length !== 0) {
     res.pagination = iPagination
