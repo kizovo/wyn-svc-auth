@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
 datasource db {
@@ -15,4 +16,6 @@ model Users {
   id        Int     @id @default(autoincrement())
   email     String  @unique
   password  String
+
+  @@fulltext([email])
 }

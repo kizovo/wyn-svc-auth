@@ -34,7 +34,9 @@ export default class UserQuery {
           email: true,
         },
         where: {
-          ...(q.search ? { email: q.search } : {}),
+          email: {
+            ...(q.search ? { contains: q.search } : {}),
+          },
         },
       })
       const total = await this.dbMysql.users.count()
