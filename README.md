@@ -43,7 +43,7 @@ To get started with this service, simply follow this step using CLI:
 6. Run migration files
    ```
    $ bunx prisma migrate dev --name init (preferred way)
-   $ prisma db push (alternate if above command doesn't work)
+   $ bunx prisma db push (alternate if above command doesn't work)
    ```
 
 ## Development

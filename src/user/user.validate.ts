@@ -21,6 +21,10 @@ export const validate = {
       format: 'email',
       error: 'field email invalid format'
     }),
+    phone: t.RegExp(/^\+[1-9]\d{1,14}$/,
+      {
+        error: 'field phone invalid format'
+      }),
     password: t.String({
       minLength: 8,
       error: 'field password minimum 8 character'
