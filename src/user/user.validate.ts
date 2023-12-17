@@ -1,6 +1,14 @@
 import { t } from 'elysia'
 
 export const validate = {
+  'user.list': t.Object({
+    pg_num: t.String(),
+    pg_size: t.String(),
+    search: t.String({
+      minLength: 3,
+      error: 'field search minimum 3 character'
+    })
+  }),
   'user.detail': t.Object({
     id: t.Array(
       t.Number({

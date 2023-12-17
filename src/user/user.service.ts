@@ -1,5 +1,5 @@
 import * as dto from '@base/base.dto'
-import { ISignupReq, IUserDetailReq } from '@/user/user.dto'
+import { IDetailUserReq, IListUserReq, ISignupReq } from '@/user/user.dto'
 import UserQuery from '@/user/user.query'
 
 export default class UserService {
@@ -13,11 +13,11 @@ export default class UserService {
 
   async listUser(q: object): Promise<dto.IDataPagination> {
     return (await this.query.qListUser(
-      q as dto.IPaginationReq,
+      q as IListUserReq,
     )) as dto.IDataPagination
   }
 
-  async detailUser(r: IUserDetailReq): Promise<dto.IData> {
+  async detailUser(r: IDetailUserReq): Promise<dto.IData> {
     return (await this.query.qDetailUser(r)) as dto.IData
   }
 

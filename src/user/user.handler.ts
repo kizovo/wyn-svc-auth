@@ -2,7 +2,7 @@ import UserService from '@/user/user.service'
 import * as C from '@/constant'
 import * as dto from '@base/base.dto'
 import { errorHandler, jsonPass } from '@base/base.handler'
-import { IUserDetailReq, ISignupReq } from '@/user/user.dto'
+import { IDetailUserReq, ISignupReq } from '@/user/user.dto'
 
 export default class UserHandler {
   private svc: UserService
@@ -27,7 +27,7 @@ export default class UserHandler {
     body: unknown,
   ): Promise<dto.IJsonResponse> {
     set.headers = C.API.HEADERS
-    const req = body as IUserDetailReq
+    const req = body as IDetailUserReq
     if (!Array.isArray(req.id)) {
       return errorHandler({ code: 'I1001', message: C.ERROR_MSG['I1001'] }, set)
     }

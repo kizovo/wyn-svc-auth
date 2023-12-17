@@ -21,7 +21,8 @@ export default class UserRoutes {
       this.app.group(`/users/v1`, (app: any) =>
         app
           .model(validate)
-          .get(`/list`, ({ set, query }: any) => h.listUser(set, query))
+          .get(`/list`, ({ set, query }: any) => h.listUser(set, query),
+            { query: 'user.list' },)
           .post(
             `/list`, ({ set, body }: any) => h.detailUser(set, body),
             { body: 'user.detail' },)

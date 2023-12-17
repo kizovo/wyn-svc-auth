@@ -1,7 +1,7 @@
 import * as dto from '@base/base.dto'
 import * as C from '@/constant'
 import { isStrIsNumeric } from '@base/base.lib'
-import { ISignupReq, IUserDetailReq } from '@/user/user.dto'
+import { IDetailUserReq, IListUserReq, ISignupReq } from '@/user/user.dto'
 
 export default class UserQuery {
   private db
@@ -24,7 +24,7 @@ export default class UserQuery {
     return { pgNum, take, skip }
   }
 
-  async qListUser(q: dto.IPaginationReq): Promise<object> {
+  async qListUser(q: IListUserReq): Promise<object> {
     let { take, pgNum, skip } = this.calculatePage(q)
     let { result, total } = await this.db.wrapException(async () => {
       const result = await this.dbMysql.users.findMany({
@@ -32,6 +32,9 @@ export default class UserQuery {
         skip,
         select: {
           email: true,
+        },
+        where: {
+          ...(q.search ? { email: q.search } : {}),
         },
       })
       const total = await this.dbMysql.users.count()
@@ -48,7 +51,7 @@ export default class UserQuery {
     return this.mapResultWithPagination(pagination, result)
   }
 
-  async qDetailUser(r: IUserDetailReq): Promise<object> {
+  async qDetailUser(r: IDetailUserReq): Promise<object> {
     let result = await this.db.wrapException(async () => {
       return await this.dbMysql.users.findMany({
         select: {
