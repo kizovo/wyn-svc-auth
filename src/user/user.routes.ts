@@ -2,7 +2,7 @@ import { Elysia } from 'elysia'
 import * as dto from '@base/base.dto'
 import UserHandler from '@/user/user.handler'
 import UserService from '@/user/user.service'
-import { validate } from '@/user/user.validate'
+import { reqValidation } from '@/user/user.validate'
 
 export default class UserRoutes {
   private app
@@ -20,7 +20,7 @@ export default class UserRoutes {
     return () =>
       this.app.group(`/users/v1`, (app: any) =>
         app
-          .model(validate)
+          .model(reqValidation)
           .get(`/list`, ({ set, query }: any) => h.listUser(set, query),
             { query: 'user.list' },)
           .post(

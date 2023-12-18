@@ -12,4 +12,5 @@ export interface IDetailUserReq {
 
 export interface IListUserReq extends dto.IPaginationReq {
   search: string
+  fields: string
 }

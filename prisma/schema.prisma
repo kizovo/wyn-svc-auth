@@ -18,5 +18,5 @@ model Users {
   phone     String
   password  String
 
-  @@fulltext([email])
+  @@fulltext([email, phone])
 }

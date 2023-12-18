@@ -27,17 +27,27 @@ export default class UserQuery {
   async qListUser(q: IListUserReq): Promise<object> {
     let { take, pgNum, skip } = this.calculatePage(q)
     let { result, total } = await this.db.wrapException(async () => {
+      let isShowEmail = (q.fields.includes("email")) ?? false
+      let isShowPhone = (q.fields.includes("phone")) ?? false
+      let exposableField = {
+        email: true,
+        phone: true,
+      }
+
       const result = await this.dbMysql.users.findMany({
-        take,
-        skip,
-        select: {
-          email: true,
-        },
+        select: q.fields ? {
+          email: isShowEmail,
+          phone: isShowPhone,
+        } : exposableField,
         where: {
-          email: {
-            ...(q.search ? { contains: q.search } : {}),
-          },
+          ...(q.search ? {
+            OR: [
+              (isShowEmail ? { email: { contains: q.search } } : {}),
+              (isShowPhone ? { phone: { contains: q.search } } : {}),
+            ]
+          } : {}),
         },
+        take, skip,   // for pagination purposes
       })
       const total = await this.dbMysql.users.count()
       return { result, total }
