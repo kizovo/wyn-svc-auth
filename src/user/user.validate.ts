@@ -11,9 +11,11 @@ export const reqValidation = {
         error: 'field search minimum 3 character'
       }),
     ),
-    fields: t.String({
-      error: "invalid fields",
-    }),
+    fields: t.Optional(
+      t.String({
+        error: "invalid fields",
+      }),
+    ),
   }),
   'user.detail': t.Object({
     id: t.Array(
@@ -31,7 +33,7 @@ export const reqValidation = {
       {
         error: 'field phone invalid format (max. 15 digit), i.e +(country_code)(city_code)(subs_number)'
       }),
-    password: t.RegExp(C.REGEX.PASSWORD_STRONG,
+    password: t.RegExp(C.REGEX.PASSWORD_MEDIUM,
       {
         error: 'field password min. 8 char, at least 1 uppercase'
       }),

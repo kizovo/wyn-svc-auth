@@ -1,4 +1,4 @@
-export function isStrIsNumeric(str: any): boolean {
+export function isStrIsNumber(str: any): boolean {
   // only accept strings
   if (typeof str != 'string') return false
 
