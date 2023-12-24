@@ -1,8 +1,8 @@
 import UserService from '@/user/user.service'
 import * as C from '@/constant'
 import * as dto from '@base/base.dto'
-import { errorHandler, jsonPass } from '@base/base.handler'
-import { IDetailUserReq, ISignupReq } from '@/user/user.dto'
+import { errorHandler, jsonPass, sanitizeQueryParam } from '@base/base.handler'
+import { IDetailUserReq, IListUserReq, ISignupReq } from '@/user/user.dto'
 
 export default class UserHandler {
   private svc: UserService
@@ -13,8 +13,13 @@ export default class UserHandler {
     this.log = setup.log
   }
 
-  async listUser(set: dto.IHttpSet, query: object): Promise<dto.IJsonResponse> {
+  async listUser(
+    set: dto.IHttpSet,
+    query: IListUserReq,
+  ): Promise<dto.IJsonResponse> {
     set.headers = C.API.HEADERS
+
+    query.search = sanitizeQueryParam(query.search) // sanitize query
     const res = await this.svc.listUser(query)
     if (res.error) {
       return errorHandler(res.error, set)

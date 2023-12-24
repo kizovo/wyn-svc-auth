@@ -50,7 +50,7 @@ export interface IPaginationReq {
 }
 
 export interface IPage {
-  pgNum: number
-  take: number
+  pg_num: number
+  pg_size: number
   skip: number
 }

@@ -4,6 +4,16 @@ export interface ISignupReq {
   email: string
   password: string
   phone: string
+  first_name: string
+  last_name: string
+}
+
+export interface IDbSignupReq {
+  email: string
+  password: string
+  phone: string
+  firstName: string
+  lastName: string
 }
 
 export interface IDetailUserReq {

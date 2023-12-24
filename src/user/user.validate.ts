@@ -37,5 +37,13 @@ export const reqValidation = {
       {
         error: 'field password min. 8 char, at least 1 uppercase'
       }),
+    first_name: t.String({
+      maxLength: 50,
+      error: 'field first name max. 50 char'
+    }),
+    last_name: t.String({
+      maxLength: 50,
+      error: 'field last name max. 50 char'
+    }),
   }),
 }

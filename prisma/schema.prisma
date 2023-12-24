@@ -12,11 +12,14 @@ datasource db {
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
-model Users {
-  id        Int     @id @default(autoincrement())
-  email     String  @unique
-  phone     String
-  password  String
+model User {
+  id          Int     @id @default(autoincrement())
+  email       String  @unique
+  phone       String  @db.VarChar(15)
+  password    String
+  firstName   String  @map("first_name")
+  lastName    String  @map("last_name")
 
-  @@fulltext([email, phone])
+  @@map("users")
+  @@fulltext([email, phone, firstName, lastName])
 }

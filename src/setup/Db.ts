@@ -1,6 +1,5 @@
 import config from '@/config'
 import { PrismaClient } from '@prisma/client'
-import * as dto from '@base/base.dto'
 
 export default class Db {
   private prismaClient: PrismaClient

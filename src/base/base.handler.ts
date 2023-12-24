@@ -2,8 +2,8 @@ import * as C from '@/constant'
 import { IError, IHttpSet, IJsonResponse } from '@base/base.dto'
 
 function errorHandler(error: IError, set: IHttpSet) {
-  let code = error.code
-  let err = Error(error.message)
+  const code = error.code
+  const err = Error(error.message)
 
   // code: 'VALIDATION' | 'NOT_FOUND' | 'INTERNAL_SERVER_ERROR'
   // CODE_NUM: '400' | '404' | '500'
@@ -27,7 +27,7 @@ function errorHandler(error: IError, set: IHttpSet) {
 }
 
 const jsonFail = (iCode = '500', iMessage = '') => {
-  let res: IJsonResponse = {
+  const res: IJsonResponse = {
     meta: {
       code: iCode,
       status: 'error',
@@ -39,7 +39,7 @@ const jsonFail = (iCode = '500', iMessage = '') => {
 }
 
 const jsonPass = (iData = {}, iMessage = '', iPagination = {}) => {
-  let res: IJsonResponse = {
+  const res: IJsonResponse = {
     meta: {
       code: '000',
       status: 'success',
@@ -53,4 +53,9 @@ const jsonPass = (iData = {}, iMessage = '', iPagination = {}) => {
   return res
 }
 
-export { jsonFail, jsonPass, errorHandler }
+const sanitizeQueryParam = (s: string) => {
+  const enc = encodeURIComponent(s)
+  return decodeURIComponent(enc.replaceAll('%20', '+'))
+}
+
+export { jsonFail, jsonPass, errorHandler, sanitizeQueryParam }
