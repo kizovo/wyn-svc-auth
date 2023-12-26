@@ -19,7 +19,11 @@ export default class UserHandler {
   ): Promise<dto.IJsonResponse> {
     set.headers = C.API.HEADERS
 
-    query.search = sanitizeQueryParam(query.search) // sanitize query
+    // sanitize query param
+    if (query.search && query.search != '') {
+      query.search = sanitizeQueryParam(query.search)
+    }
+
     const res = await this.svc.listUser(query)
     if (res.error) {
       return errorHandler(res.error, set)

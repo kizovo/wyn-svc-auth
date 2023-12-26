@@ -16,6 +16,14 @@ export interface IDbSignupReq {
   lastName: string
 }
 
+export interface IDbFields {
+  email: boolean
+  password: boolean
+  phone: boolean
+  firstName: boolean
+  lastName: boolean
+}
+
 export interface IDetailUserReq {
   id: number[]
 }

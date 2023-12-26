@@ -2,6 +2,7 @@ import * as dto from '@base/base.dto'
 import * as C from '@/constant'
 import { isStrIsNumber } from '@base/base.lib'
 import {
+  IDbFields,
   IDetailUserReq,
   IListUserReq,
   IDbSignupReq,
@@ -12,9 +13,23 @@ import {
 const EXPOSABLE_FIELD = {
   email: true,
   phone: true,
+  password: false,
   firstName: true,
   lastName: true,
 }
+
+const exposableFieldBySearch = (fields: string): IDbFields => {
+  const exp = { ...EXPOSABLE_FIELD }
+  if (fields) {
+    exp.email = fields.includes('email') ?? false
+    exp.phone = fields.includes('phone') ?? false
+    exp.firstName = fields.includes('first_name') ?? false
+    exp.lastName = fields.includes('last_name') ?? false
+  }
+
+  return exp
+}
+
 // mapping json to db fields
 const mapSignUpDb = (data: ISignupReq): IDbSignupReq => {
   return {
@@ -63,7 +78,8 @@ export default class UserRepo {
   }
 
   async qDetailUser(r: IDetailUserReq): Promise<object> {
-    let result = await this.db.wrapException(async () => {
+    console.log(EXPOSABLE_FIELD)
+    const result = await this.db.wrapException(async () => {
       return await this.dbMysql.user.findMany({
         select: EXPOSABLE_FIELD,
         where: {
@@ -84,46 +100,20 @@ export default class UserRepo {
   async qListUser(q: IListUserReq): Promise<object> {
     let { pg_size, pg_num, skip } = calculatePage(q)
     let { result, total } = await this.db.wrapException(async () => {
-      let isShowEmail = true
-      let isShowPhone = true
-      let isShowFirstName = true
-      let isShowLastName = true
-
-      if (q.fields) {
-        isShowEmail = q.fields.includes('email') ?? false
-        isShowPhone = q.fields.includes('phone') ?? false
-        isShowFirstName = q.fields.includes('first_name') ?? false
-        isShowLastName = q.fields.includes('last_name') ?? false
-      }
-
+      const f = exposableFieldBySearch(q.fields)
       const result = await this.dbMysql.user.findMany({
-        select: q.fields
-          ? {
-              email: isShowEmail,
-              phone: isShowPhone,
-              firstName: isShowFirstName,
-              lastName: isShowLastName,
-            }
-          : EXPOSABLE_FIELD,
+        select: f,
         where: {
-          ...(q.search
-            ? {
+          ...(!q.search
+            ? {}
+            : {
                 OR: [
-                  {
-                    email: isShowEmail ? { contains: q.search } : {},
-                  },
-                  {
-                    phone: isShowPhone ? { contains: q.search } : {},
-                  },
-                  {
-                    firstName: isShowFirstName ? { contains: q.search } : {},
-                  },
-                  {
-                    lastName: isShowLastName ? { contains: q.search } : {},
-                  },
+                  { email: f.email ? { contains: q.search } : {} },
+                  { phone: f.phone ? { contains: q.search } : {} },
+                  { firstName: f.firstName ? { contains: q.search } : {} },
+                  { lastName: f.lastName ? { contains: q.search } : {} },
                 ],
-              }
-            : {}),
+              }),
         },
         take: pg_size, // for pagination
         skip, // for pagination
