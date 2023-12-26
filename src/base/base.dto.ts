@@ -45,12 +45,10 @@ export interface ISetup {
 }
 
 export interface IPaginationReq {
-  pg_num: string
-  pg_size: string
-}
-
-export interface IPage {
   pg_num: number
   pg_size: number
+}
+
+export interface IPage extends IPaginationReq {
   skip: number
 }

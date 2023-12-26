@@ -1,6 +1,4 @@
 import * as dto from '@base/base.dto'
-import * as C from '@/constant'
-import { isStrIsNumber } from '@base/base.lib'
 import {
   IDbFields,
   IDetailUserReq,
@@ -58,12 +56,8 @@ const mapSignUpJson = (data: Array<IDbSignupReq>): Array<ISignupReq> => {
 }
 
 const calculatePage = (q: dto.IPaginationReq): dto.IPage => {
-  const pg_num =
-    q.pg_num && isStrIsNumber(q.pg_num) ? Number(q.pg_num) : C.DEFAULT.PG_NUM
-  const pg_size =
-    q.pg_size && isStrIsNumber(q.pg_size)
-      ? Number(q.pg_size)
-      : C.DEFAULT.PG_SIZE
+  const pg_num = Number(q.pg_num)
+  const pg_size = Number(q.pg_size)
   const skip = pg_num - 1 >= 0 ? (pg_num - 1) * pg_size : 0
   return { pg_num, pg_size, skip }
 }
@@ -78,7 +72,6 @@ export default class UserRepo {
   }
 
   async qDetailUser(r: IDetailUserReq): Promise<object> {
-    console.log(EXPOSABLE_FIELD)
     const result = await this.db.wrapException(async () => {
       return await this.dbMysql.user.findMany({
         select: EXPOSABLE_FIELD,

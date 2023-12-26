@@ -3,6 +3,7 @@ import * as C from '@/constant'
 import * as dto from '@base/base.dto'
 import { errorHandler, jsonPass, sanitizeQueryParam } from '@base/base.handler'
 import { IDetailUserReq, IListUserReq, ISignupReq } from '@/user/user.dto'
+import { isStrIsNumber } from '@base/base.lib'
 
 export default class UserHandler {
   private svc: UserService
@@ -19,16 +20,20 @@ export default class UserHandler {
   ): Promise<dto.IJsonResponse> {
     set.headers = C.API.HEADERS
 
-    // sanitize query param
     if (query.search && query.search != '') {
       query.search = sanitizeQueryParam(query.search)
     }
+    if (!isStrIsNumber(query.pg_num)) {
+      query.pg_num = C.DEFAULT.PG_NUM
+    }
+    if (!isStrIsNumber(query.pg_size)) {
+      query.pg_size = C.DEFAULT.PG_SIZE
+    }
 
     const res = await this.svc.listUser(query)
-    if (res.error) {
-      return errorHandler(res.error, set)
-    }
-    return jsonPass(res.data, 'Success Get User List', res.pagination)
+    return res.error
+      ? errorHandler(res.error, set)
+      : jsonPass(res.data, 'Success Get User List', res.pagination)
   }
 
   async detailUser(
