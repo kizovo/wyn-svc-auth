@@ -12,14 +12,16 @@ export default class UserService {
   }
 
   async listUser(q: object): Promise<dto.IDataPagination> {
-    return (await this.repo.qListUser(q as IListUserReq)) as dto.IDataPagination
+    return (await this.repo.listUserDb(
+      q as IListUserReq,
+    )) as dto.IDataPagination
   }
 
   async detailUser(r: IDetailUserReq): Promise<dto.IData> {
-    return (await this.repo.qDetailUser(r)) as dto.IData
+    return (await this.repo.detailUserDb(r)) as dto.IData
   }
 
   async addUser(r: ISignupReq): Promise<dto.IData> {
-    return (await this.repo.qAddUser(r)) as dto.IData
+    return (await this.repo.addUserDb(r)) as dto.IData
   }
 }

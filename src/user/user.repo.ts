@@ -70,7 +70,7 @@ export default class UserRepo {
     this.dbMysql = this.db.dbMysql()
   }
 
-  async qDetailUser(r: IDetailUserReq): Promise<object> {
+  async detailUserDb(r: IDetailUserReq): Promise<object> {
     const result = await this.db.wrapException(async () => {
       return await this.dbMysql.user.findMany({
         select: EXPOSABLE_FIELD,
@@ -82,14 +82,14 @@ export default class UserRepo {
     return this.mapResult(result)
   }
 
-  async qAddUser(r: ISignupReq): Promise<object> {
+  async addUserDb(r: ISignupReq): Promise<object> {
     return this.db.wrapException(async () => {
       const DbSignupReq: IDbSignupReq = mapSignUpDb(r)
       return await this.dbMysql.user.create({ data: DbSignupReq })
     })
   }
 
-  async qListUser(q: IListUserReq): Promise<object> {
+  async listUserDb(q: IListUserReq): Promise<object> {
     let { pg_size, pg_num, skip } = calculatePage(q)
     let { result, total } = await this.db.wrapException(async () => {
       const f = exposableFieldBySearch(q.fields)
