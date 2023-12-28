@@ -54,9 +54,9 @@ const mapSignUpJson = (data: Array<IDbSignupReq>): Array<ISignupReq> => {
   return signUpReq
 }
 
-const calculatePage = (q: dto.IPaginationReq): dto.IPage => {
-  const pg_num = Number(q.pg_num)
-  const pg_size = Number(q.pg_size)
+const calculatePage = (r: dto.IPaginationReq): dto.IPage => {
+  const pg_num = Number(r.pg_num)
+  const pg_size = Number(r.pg_size)
   const skip = pg_num - 1 >= 0 ? (pg_num - 1) * pg_size : 0
   return { pg_num, pg_size, skip }
 }
@@ -89,21 +89,21 @@ export default class UserRepo {
     })
   }
 
-  async listUserDb(q: IListUserReq): Promise<object> {
-    let { pg_size, pg_num, skip } = calculatePage(q)
+  async listUserDb(r: IListUserReq): Promise<object> {
+    let { pg_size, pg_num, skip } = calculatePage(r)
     let { result, total } = await this.db.wrapException(async () => {
-      const f = exposableFieldBySearch(q.fields)
+      const f = exposableFieldBySearch(r.fields)
       const result = await this.dbMysql.user.findMany({
         select: f,
         where: {
-          ...(!q.search
+          ...(!r.search
             ? {}
             : {
                 OR: [
-                  { email: f.email ? { contains: q.search } : {} },
-                  { phone: f.phone ? { contains: q.search } : {} },
-                  { firstName: f.firstName ? { contains: q.search } : {} },
-                  { lastName: f.lastName ? { contains: q.search } : {} },
+                  { email: f.email ? { contains: r.search } : {} },
+                  { phone: f.phone ? { contains: r.search } : {} },
+                  { firstName: f.firstName ? { contains: r.search } : {} },
+                  { lastName: f.lastName ? { contains: r.search } : {} },
                 ],
               }),
         },
