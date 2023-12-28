@@ -29,4 +29,4 @@ export function fakeUserComplete() {
   };
 }
 
-export const users = faker.helpers.uniqueArray(fakeUser, 5);
+export const users = faker.helpers.uniqueArray(fakeUser, 1500);

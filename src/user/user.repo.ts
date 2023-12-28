@@ -91,7 +91,7 @@ export default class UserRepo {
 
   async listUserDb(r: IListUserReq): Promise<object> {
     let { pg_size, pg_num, skip } = calculatePage(r)
-    let { result, total } = await this.db.wrapException(async () => {
+    const { result, total } = await this.db.wrapException(async () => {
       const f = exposableFieldBySearch(r.fields)
       const result = await this.dbMysql.user.findMany({
         select: f,

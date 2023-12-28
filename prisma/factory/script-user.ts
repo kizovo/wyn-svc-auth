@@ -18,6 +18,7 @@ const prisma = new PrismaClient();
 // A `main` function so that we can use async/await
 async function main() {
   // Clear up database
+  await prisma.$executeRaw`TRUNCATE TABLE users`
   await prisma.user.deleteMany({ where: {} })
   // Seed the database with users
   await prisma.user.createMany({
