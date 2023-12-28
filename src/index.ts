@@ -12,8 +12,8 @@ const route = new routes(app, { db: setupDB, log: setupLog })
 
 app.use(swagger()).use(route.router()).listen(Number(config.APP_PORT))
 
-if (!await setupDB.isDatabaseConnect()) {
-  app.stop();
+if (!setupDB.isDatabaseConnect()) {
+  app.stop()
   process.exit(0)
 }
 

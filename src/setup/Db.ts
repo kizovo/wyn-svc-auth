@@ -19,7 +19,7 @@ export default class Db {
     })
     if (config.APP_ENV != 'prod') {
       this.prismaClient.$on(
-        'query',
+        'query' as never,
         (e: { query: string; params: object; duration: number }) => {
           console.log('Query: ' + e.query)
           console.log('Params: ' + e.params)

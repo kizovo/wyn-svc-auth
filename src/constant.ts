@@ -13,8 +13,8 @@ export const DEFAULT = {
 }
 
 export const REGEX = {
-  PHONE_E164: /^\+[1-9]\d{1,14}$/,            // e164 format: +(14 digit number)
-  PASSWORD_MEDIUM: /^(?=.*[A-Z]).{8,}$/,      // min. 8 char, 1 uppercase
+  PHONE_E164: /^\+[1-9]\d{8,14}$/, // e164 format: +(14 digit number)
+  PASSWORD_MEDIUM: /^(?=.*[A-Z]).{8,}$/, // min. 8 char, 1 uppercase
   PASSWORD_STRONG: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/, // min. 8 char, 1 upper, 1 lower, 1 number, 1 special char
 }
 

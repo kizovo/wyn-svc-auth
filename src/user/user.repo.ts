@@ -41,7 +41,7 @@ const mapSignUpDb = (data: ISignupReq): IDbSignupReq => {
 
 // mapping db fields to json
 const mapSignUpJson = (data: Array<IDbSignupReq>): Array<ISignupReq> => {
-  let signUpReq: Array<ISignupReq> = []
+  const signUpReq: Array<ISignupReq> = []
   data.forEach((_, i) => {
     signUpReq.push({
       email: data[i].email,
@@ -51,7 +51,6 @@ const mapSignUpJson = (data: Array<IDbSignupReq>): Array<ISignupReq> => {
       last_name: data[i].lastName,
     })
   })
-
   return signUpReq
 }
 

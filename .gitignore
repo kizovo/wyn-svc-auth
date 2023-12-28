@@ -15,6 +15,10 @@
 # production
 /build
 
+# others
+/dist/
+/prisma/factory/*.js
+
 # misc
 .DS_Store
 *.pem
