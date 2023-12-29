@@ -7,9 +7,14 @@ export const API = {
   },
 }
 
-export const DEFAULT = {
-  PG_NUM: 1,
-  PG_SIZE: 5,
+export const HASH = {
+  MEM_COST: 4,
+  TIME_COST: 3,
+}
+
+export const PAGE = {
+  NUM: 1,
+  SIZE: 5,
 }
 
 export const REGEX = {

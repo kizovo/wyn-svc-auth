@@ -8,3 +8,9 @@ test('isStrIsNumber("a")', () => {
 test('isStrIsNumber("32")', () => {
   expect(lib.isStrIsNumber('32')).toBe(true)
 })
+
+test('hash("Test1234!") & verify it', async () => {
+  const hash = await lib.hash('Test1234!')
+  const isMatch = await lib.verifyHash('Test1234!', hash)
+  expect(isMatch).toBe(true)
+})

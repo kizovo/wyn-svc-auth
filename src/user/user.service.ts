@@ -11,10 +11,8 @@ export default class UserService {
     this.repo = new UserRepo(this.setup)
   }
 
-  async listUser(r: object): Promise<dto.IDataPagination> {
-    return (await this.repo.listUserDb(
-      r as IListUserReq,
-    )) as dto.IDataPagination
+  async listUser(r: IListUserReq): Promise<dto.IDataPagination> {
+    return (await this.repo.listUserDb(r)) as dto.IDataPagination
   }
 
   async detailUser(r: IDetailUserReq): Promise<dto.IData> {

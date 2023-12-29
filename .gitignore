@@ -18,6 +18,7 @@
 # others
 /dist/
 /prisma/factory/*.js
+/src/base/*.js
 
 # misc
 .DS_Store

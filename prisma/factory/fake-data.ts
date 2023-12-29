@@ -5,8 +5,8 @@ import { faker } from '@faker-js/faker';
 
 export function fakeUser() {
   return {
-    email: faker.internet.email(),
-    phone: faker.lorem.words(5),
+    email: undefined,
+    phone: undefined,
     password: faker.lorem.words(5),
     firstName: faker.person.firstName(),
     lastName: faker.person.lastName(),
@@ -18,11 +18,12 @@ export function fakeUserComplete() {
   return {
     id: faker.number.int(),
     uuid: '[object Object]',
-    email: faker.internet.email(),
-    phone: faker.lorem.words(5),
+    email: undefined,
+    phone: undefined,
     password: faker.lorem.words(5),
     firstName: faker.person.firstName(),
     lastName: faker.person.lastName(),
+    basicId: false,
     createdAt: new Date(),
     updatedAt: undefined,
     deletedAt: undefined,

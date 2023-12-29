@@ -24,10 +24,10 @@ export default class UserHandler {
       query.search = sanitizeQueryParam(query.search)
     }
     if (!isStrIsNumber(query.pg_num)) {
-      query.pg_num = C.DEFAULT.PG_NUM
+      query.pg_num = C.PAGE.NUM
     }
     if (!isStrIsNumber(query.pg_size)) {
-      query.pg_size = C.DEFAULT.PG_SIZE
+      query.pg_size = C.PAGE.SIZE
     }
 
     const res = await this.svc.listUser(query)

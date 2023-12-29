@@ -1,14 +1,17 @@
 import * as dto from '@base/base.dto'
+import { hash } from '@base/base.lib'
 import {
   IDbFields,
   IDetailUserReq,
   IListUserReq,
-  IDbSignupReq,
   ISignupReq,
+  mapSignUpDb,
+  mapFieldToJson,
 } from '@/user/user.dto'
 
 // list down all database field that safely expose to view, update & delete
 const EXPOSABLE_FIELD = {
+  uuid: true,
   email: true,
   phone: true,
   firstName: true,
@@ -24,32 +27,6 @@ const exposableFieldBySearch = (fields: string): IDbFields => {
     exp.lastName = fields.includes('last_name') ?? false
   }
   return exp
-}
-
-// mapping json to db fields
-const mapSignUpDb = (data: ISignupReq): IDbSignupReq => {
-  return {
-    email: data.email,
-    phone: data.phone,
-    password: data.password,
-    firstName: data.first_name,
-    lastName: data.last_name,
-  }
-}
-
-// mapping db fields to json
-const mapSignUpJson = (data: Array<IDbSignupReq>): Array<ISignupReq> => {
-  const signUpReq: Array<ISignupReq> = []
-  data.forEach((_, i) => {
-    signUpReq.push({
-      email: data[i].email,
-      phone: data[i].phone,
-      password: data[i].password,
-      first_name: data[i].firstName,
-      last_name: data[i].lastName,
-    })
-  })
-  return signUpReq
 }
 
 const calculatePage = (r: dto.IPaginationReq): dto.IPage => {
@@ -82,50 +59,51 @@ export default class UserRepo {
 
   async addUserDb(r: ISignupReq): Promise<object> {
     return this.db.wrapException(async () => {
-      const DbSignupReq: IDbSignupReq = mapSignUpDb(r)
-      return await this.dbMysql.user.create({ data: DbSignupReq })
+      r.password = await hash(r.password)
+      return await this.dbMysql.user.create({ data: mapSignUpDb(r) as any })
     })
   }
 
-  async listUserDb(r: IListUserReq): Promise<object> {
+  async listUserDb(
+    r: IListUserReq,
+    condition = 'exclude_deleted',
+  ): Promise<object> {
     let { pg_size, pg_num, skip } = calculatePage(r)
-    const { result, total } = await this.db.wrapException(async () => {
+    const { result, total, count } = await this.db.wrapException(async () => {
       const f = exposableFieldBySearch(r.fields)
+      const whereRules = {
+        ...(!r.search
+          ? {}
+          : {
+              OR: [
+                { email: f.email ? { contains: r.search } : {} },
+                { phone: f.phone ? { contains: r.search } : {} },
+                { firstName: f.firstName ? { contains: r.search } : {} },
+                { lastName: f.lastName ? { contains: r.search } : {} },
+              ],
+            }),
+        ...(condition == 'exclude_deleted' ? { deletedAt: null } : {}),
+      }
+
       const result = await this.dbMysql.user.findMany({
         select: f,
-        where: {
-          ...(!r.search
-            ? {}
-            : {
-                OR: [
-                  { email: f.email ? { contains: r.search } : {} },
-                  { phone: f.phone ? { contains: r.search } : {} },
-                  { firstName: f.firstName ? { contains: r.search } : {} },
-                  { lastName: f.lastName ? { contains: r.search } : {} },
-                ],
-              }),
-        },
-        take: pg_size, // for pagination
-        skip, // for pagination
+        where: whereRules,
+        take: pg_size,
+        skip,
       })
-      const total = await this.dbMysql.user.count()
-      return { result, total }
+      const total = await this.dbMysql.user.count({ where: whereRules })
+      const count = result.length
+      return { result, total, count }
     })
 
-    const pagination = {
-      count: result.length,
-      pg_num,
-      pg_size,
-      total,
-    }
-
+    const pagination = { count, pg_num, pg_size, total }
     return this.mapResultWithPagination(pagination, result)
   }
 
   mapResult(data: object): dto.IData {
     const strData = JSON.stringify(data)
     const oData = JSON.parse(strData)
-    const result = mapSignUpJson(oData)
+    const result = mapFieldToJson(oData)
     return { data: result, error: null }
   }
 
@@ -135,7 +113,7 @@ export default class UserRepo {
   ): dto.IDataPagination {
     const strData = JSON.stringify(data)
     const oData = JSON.parse(strData)
-    const result = mapSignUpJson(oData)
+    const result = mapFieldToJson(oData)
     return { pagination, data: result, error: null }
   }
 }

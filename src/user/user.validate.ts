@@ -25,14 +25,18 @@ export const reqValidation = {
     ),
   }),
   'user.signup': t.Object({
-    email: t.String({
-      format: 'email',
-      error: 'field email invalid format',
-    }),
-    phone: t.RegExp(C.REGEX.PHONE_E164, {
-      error:
-        'field phone invalid format (max. 15 digit), i.e +(country_code)(city_code)(subs_number)',
-    }),
+    email: t.Optional(
+      t.String({
+        format: 'email',
+        error: 'field email invalid format',
+      }),
+    ),
+    phone: t.Optional(
+      t.RegExp(C.REGEX.PHONE_E164, {
+        error:
+          'field phone invalid format (max. 15 digit), i.e +(country_code)(city_code)(subs_number)',
+      }),
+    ),
     password: t.RegExp(C.REGEX.PASSWORD_MEDIUM, {
       error: 'field password min. 8 char, at least 1 uppercase',
     }),
