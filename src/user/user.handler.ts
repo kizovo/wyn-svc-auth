@@ -42,7 +42,7 @@ export default class UserHandler {
   ): Promise<dto.IJsonResponse> {
     set.headers = C.API.HEADERS
     const req = body as IDetailUserReq
-    if (!Array.isArray(req.id)) {
+    if (!Array.isArray(req.uuid)) {
       return errorHandler({ code: 'I1001', message: C.ERROR_MSG['I1001'] }, set)
     }
 

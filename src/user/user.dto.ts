@@ -18,14 +18,13 @@ export interface IDbSignupReq {
 
 export interface IDbFields {
   email: boolean
-  password: boolean
   phone: boolean
   firstName: boolean
   lastName: boolean
 }
 
 export interface IDetailUserReq {
-  id: number[]
+  uuid: string[]
 }
 
 export interface IListUserReq extends dto.IPaginationReq {

@@ -11,7 +11,6 @@ import {
 const EXPOSABLE_FIELD = {
   email: true,
   phone: true,
-  password: false,
   firstName: true,
   lastName: true,
 }
@@ -24,7 +23,6 @@ const exposableFieldBySearch = (fields: string): IDbFields => {
     exp.firstName = fields.includes('first_name') ?? false
     exp.lastName = fields.includes('last_name') ?? false
   }
-
   return exp
 }
 
@@ -75,7 +73,7 @@ export default class UserRepo {
       return await this.dbMysql.user.findMany({
         select: EXPOSABLE_FIELD,
         where: {
-          id: { in: r.id },
+          uuid: { in: r.uuid },
         },
       })
     })
@@ -128,7 +126,6 @@ export default class UserRepo {
     const strData = JSON.stringify(data)
     const oData = JSON.parse(strData)
     const result = mapSignUpJson(oData)
-
     return { data: result, error: null }
   }
 
@@ -139,7 +136,6 @@ export default class UserRepo {
     const strData = JSON.stringify(data)
     const oData = JSON.parse(strData)
     const result = mapSignUpJson(oData)
-
     return { pagination, data: result, error: null }
   }
 }

@@ -7,7 +7,8 @@ export function fakeUser() {
   const RANDOM_NUMBER = faker.string.numeric(4)
   const RANDOM_SPECIAL_CHAR = faker.string.symbol(1)
   const PASSWORD_MEDIUM = RANDOM_UPPER_CASE + RANDOM_LOWER_CASE + RANDOM_NUMBER + RANDOM_SPECIAL_CHAR
-  const PHONE_E164 = `+${faker.string.numeric({ length: {min:10,max:14}})}`
+  const PHONE_E164 = `+${faker.string.numeric({ length: { min: 10, max: 14 } })}`
+  const DATE_NOW = new Date()
 
   return {
     email: faker.internet.email(),
@@ -15,6 +16,9 @@ export function fakeUser() {
     password: PASSWORD_MEDIUM,
     firstName: faker.person.firstName(),
     lastName: faker.person.lastName(),
+    createdAt: DATE_NOW,
+    updatedAt: DATE_NOW,
+    deletedAt: undefined,
   };
 }
 export function fakeUserComplete() {
@@ -26,7 +30,10 @@ export function fakeUserComplete() {
     password: user.password,
     firstName: user.firstName,
     lastName: user.lastName,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
+    deletedAt: user.deletedAt,
   };
 }
 
-export const users = faker.helpers.uniqueArray(fakeUser, 1500);
+export const users = faker.helpers.uniqueArray(fakeUser, 1000);

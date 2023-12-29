@@ -17,12 +17,16 @@ datasource db {
 }
 
 model User {
-  id          Int     @id @default(autoincrement())
-  email       String  @unique
-  phone       String  @db.VarChar(15) @unique
+  id          Int         @id @default(autoincrement())
+  uuid        String      @unique @default(uuid())
+  email       String      @unique
+  phone       String      @unique @db.VarChar(15)
   password    String
-  firstName   String  @map("first_name")
-  lastName    String  @map("last_name")
+  firstName   String      @map("first_name")
+  lastName    String      @map("last_name")
+  createdAt   DateTime    @map("created_at") @default(now())
+  updatedAt   DateTime?   @map("updated_at") @updatedAt
+  deletedAt   DateTime?   @map("deleted_at")
 
   @@map("users")
   @@fulltext([email, phone, firstName, lastName])
