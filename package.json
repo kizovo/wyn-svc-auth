@@ -3,13 +3,13 @@
   "version": "1.0.42",
   "author": "Rheza Sindhuwinata <rheza.s@gmail.com>",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "bun test",
     "dev": "bun run --watch src/index.ts",
     "precommit": "pretty-quick --staged",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",
     "format": "prettier --write .",
-    "compile": "tsc -p ."
+    "compile": "bunx tsc -p ."
   },
   "dependencies": {
     "@elysiajs/jwt": "^0.8.0",

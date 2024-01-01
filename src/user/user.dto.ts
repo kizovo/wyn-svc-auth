@@ -30,6 +30,10 @@ export interface IDetailUserReq {
   uuid: string[]
 }
 
+export interface IDeleteUserReq {
+  uuid: string[]
+}
+
 export interface ISignupReq {
   email: string
   password: string

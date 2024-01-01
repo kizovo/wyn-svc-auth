@@ -24,6 +24,13 @@ export const reqValidation = {
       }),
     ),
   }),
+  'user.delete': t.Object({
+    uuid: t.Array(
+      t.String({
+        error: 'field uuid should array of string',
+      }),
+    ),
+  }),
   'user.signup': t.Object({
     email: t.Optional(
       t.String({

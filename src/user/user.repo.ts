@@ -4,6 +4,7 @@ import { hash, verifyHash } from '@base/base.lib'
 import {
   IDbFields,
   IDetailUserReq,
+  IDeleteUserReq,
   IListUserReq,
   ISigninReq,
   ISignupReq,
@@ -53,11 +54,35 @@ export default class UserRepo {
         select: EXPOSABLE_FIELD,
         where: {
           uuid: { in: r.uuid },
+          deletedAt: null,
         },
       })
     })
     result = mapFieldToJson(result as any)
     return this.mapResult(result)
+  }
+
+  async deleteUserDb(r: IDeleteUserReq, flag = 'soft_delete'): Promise<object> {
+    await this.dbMysql.wrapException(async () => {
+      if (flag == 'hard_delete') {
+        return await this.db.user.deleteMany({
+          where: {
+            uuid: { in: r.uuid },
+          },
+        })
+      }
+
+      // default soft_delete
+      return await this.db.user.updateMany({
+        where: {
+          uuid: { in: r.uuid },
+        },
+        data: {
+          deletedAt: new Date(),
+        },
+      })
+    })
+    return this.mapResult({})
   }
 
   async addUserDb(r: ISignupReq): Promise<object> {
@@ -98,10 +123,7 @@ export default class UserRepo {
     }
   }
 
-  async listUserDb(
-    r: IListUserReq,
-    condition = 'exclude_deleted',
-  ): Promise<object> {
+  async listUserDb(r: IListUserReq, flag = 'exclude_deleted'): Promise<object> {
     let { pg_size, pg_num, skip } = calculatePage(r)
     let { result, total, count } = await this.dbMysql.wrapException(
       async () => {
@@ -117,7 +139,7 @@ export default class UserRepo {
                   { lastName: f.lastName ? { contains: r.search } : {} },
                 ],
               }),
-          ...(condition == 'exclude_deleted' ? { deletedAt: null } : {}),
+          ...(flag == 'exclude_deleted' ? { deletedAt: null } : {}),
         }
 
         const result = await this.db.user.findMany({

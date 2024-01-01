@@ -4,6 +4,7 @@ import * as dto from '@base/base.dto'
 import { errorHandler, jsonPass, sanitizeQueryParam } from '@base/base.handler'
 import {
   IDetailUserReq,
+  IDeleteUserReq,
   IListUserReq,
   ISigninReq,
   ISignupReq,
@@ -56,6 +57,23 @@ export default class UserHandler {
     return res.error
       ? errorHandler(res.error, set)
       : jsonPass(res.data, 'Success Get User Detail')
+  }
+
+  async deleteUser(
+    set: dto.IHttpSet,
+    body: Object,
+  ): Promise<dto.IJsonResponse> {
+    set.headers = C.API.HEADERS
+
+    const req = body as IDeleteUserReq
+    if (!Array.isArray(req.uuid)) {
+      return errorHandler({ code: 'I1001', message: C.ERROR_MSG['I1001'] }, set)
+    }
+
+    const res = await this.svc.deleteUser(req)
+    return res.error
+      ? errorHandler(res.error, set)
+      : jsonPass(res.data, 'Success Delete User')
   }
 
   async addUser(set: dto.IHttpSet, body: unknown): Promise<dto.IJsonResponse> {

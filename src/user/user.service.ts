@@ -1,6 +1,7 @@
 import * as dto from '@base/base.dto'
 import {
   IDetailUserReq,
+  IDeleteUserReq,
   IListUserReq,
   ISigninReq,
   ISignupReq,
@@ -22,6 +23,10 @@ export default class UserService {
 
   async detailUser(r: IDetailUserReq): Promise<dto.IData> {
     return (await this.repo.detailUserDb(r)) as dto.IData
+  }
+
+  async deleteUser(r: IDeleteUserReq): Promise<dto.IData> {
+    return (await this.repo.deleteUserDb(r)) as dto.IData
   }
 
   async addUser(r: ISignupReq): Promise<dto.IData> {
