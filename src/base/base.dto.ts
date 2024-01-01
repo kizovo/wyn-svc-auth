@@ -11,10 +11,8 @@ export interface IData {
   error: IError | null
 }
 
-export interface IDataPagination {
+export interface IDataPagination extends IData {
   pagination: object
-  data: object
-  error: IError | null
 }
 
 export interface IHttpSet {

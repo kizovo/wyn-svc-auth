@@ -20,10 +20,10 @@ export default class UserHandler {
     this.log = setup.log
   }
 
-  async listUser(
+  listUser = async (
     set: dto.IHttpSet,
     query: IListUserReq,
-  ): Promise<dto.IJsonResponse> {
+  ): Promise<dto.IJsonResponse> => {
     set.headers = C.API.HEADERS
 
     if (query.search && query.search != '') {
@@ -42,10 +42,10 @@ export default class UserHandler {
       : jsonPass(res.data, 'Success Get User List', res.pagination)
   }
 
-  async detailUser(
+  detailUser = async (
     set: dto.IHttpSet,
     body: Object,
-  ): Promise<dto.IJsonResponse> {
+  ): Promise<dto.IJsonResponse> => {
     set.headers = C.API.HEADERS
 
     const req = body as IDetailUserReq
@@ -59,10 +59,10 @@ export default class UserHandler {
       : jsonPass(res.data, 'Success Get User Detail')
   }
 
-  async deleteUser(
+  deleteUser = async (
     set: dto.IHttpSet,
     body: Object,
-  ): Promise<dto.IJsonResponse> {
+  ): Promise<dto.IJsonResponse> => {
     set.headers = C.API.HEADERS
 
     const req = body as IDeleteUserReq
@@ -76,7 +76,10 @@ export default class UserHandler {
       : jsonPass(res.data, 'Success Delete User')
   }
 
-  async addUser(set: dto.IHttpSet, body: unknown): Promise<dto.IJsonResponse> {
+  addUser = async (
+    set: dto.IHttpSet,
+    body: unknown,
+  ): Promise<dto.IJsonResponse> => {
     set.headers = C.API.HEADERS
 
     const req = body as ISignupReq
@@ -92,11 +95,11 @@ export default class UserHandler {
     }
   }
 
-  async signIn(
+  signIn = async (
     set: dto.IHttpSet,
     body: Object,
     jwt: any,
-  ): Promise<dto.IJsonResponse> {
+  ): Promise<dto.IJsonResponse> => {
     set.headers = C.API.HEADERS
 
     const req = body as ISigninReq

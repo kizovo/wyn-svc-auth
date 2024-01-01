@@ -17,23 +17,18 @@ export default class UserService {
     this.repo = new UserRepo(this.setup)
   }
 
-  async listUser(r: IListUserReq): Promise<dto.IDataPagination> {
-    return (await this.repo.listUserDb(r)) as dto.IDataPagination
-  }
+  listUser = async (r: IListUserReq): Promise<dto.IDataPagination> =>
+    (await this.repo.listUserDb(r)) as dto.IDataPagination
 
-  async detailUser(r: IDetailUserReq): Promise<dto.IData> {
-    return (await this.repo.detailUserDb(r)) as dto.IData
-  }
+  detailUser = async (r: IDetailUserReq): Promise<dto.IData> =>
+    (await this.repo.detailUserDb(r)) as dto.IData
 
-  async deleteUser(r: IDeleteUserReq): Promise<dto.IData> {
-    return (await this.repo.deleteUserDb(r)) as dto.IData
-  }
+  deleteUser = async (r: IDeleteUserReq): Promise<dto.IData> =>
+    (await this.repo.deleteUserDb(r)) as dto.IData
 
-  async addUser(r: ISignupReq): Promise<dto.IData> {
-    return (await this.repo.addUserDb(r)) as dto.IData
-  }
+  addUser = async (r: ISignupReq): Promise<dto.IData> =>
+    (await this.repo.addUserDb(r)) as dto.IData
 
-  async signIn(r: ISigninReq): Promise<dto.IData> {
-    return (await this.repo.signInDb(r)) as dto.IData
-  }
+  signIn = async (r: ISigninReq): Promise<dto.IData> =>
+    (await this.repo.signInDb(r)) as dto.IData
 }
