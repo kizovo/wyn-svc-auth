@@ -1,4 +1,4 @@
-import SetupDB from '@setup/Db'
+import SetupDBMysql from '@setup/DbMysql'
 import SetupLogSentry from '@/setup/LogSentry'
 
 export interface IError {
@@ -40,7 +40,7 @@ export interface IErrorMsg {
 }
 
 export interface ISetup {
-  db: SetupDB
+  dbMysql: SetupDBMysql
   log: SetupLogSentry
 }
 

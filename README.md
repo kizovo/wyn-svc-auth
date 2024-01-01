@@ -40,10 +40,20 @@ To get started with this service, simply follow this step using CLI:
      ```
 
 5. Update DATABASE_URL value accordingly on .env file
-6. Run migration files
+6. Setup Prisma
    ```
-   $ bunx prisma migrate dev --name init (preferred way)
-   $ bunx prisma db push (alternate if above command doesn't work)
+   // generate prisma client
+   $ bunx prisma generate --schema prisma/mysql/schema.prisma
+   ```
+7. Run migration files
+   ```
+   $ bunx prisma migrate dev --schema prisma/mysql/schema.prisma --name init (preferred way)
+   $ bunx prisma db push --schema prisma/mysql/schema.prisma (alternate if above command doesn't work)
+   ```
+8. Seeding using faker
+   ```
+   $ bunx tsc ./prisma/mysql/factory/script-[entity].ts
+   $ node ./prisma/mysql/factory/script-[entity].js
    ```
 
 ## Development

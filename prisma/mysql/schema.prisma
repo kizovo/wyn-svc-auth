@@ -1,19 +1,19 @@
 // https://pris.ly/d/prisma-schema
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
 
 generator client {
   provider = "prisma-client-js"
   previewFeatures = ["fullTextSearch", "fullTextIndex"]
+  output = "../../node_modules/@prisma-mysql/client"
 }
 
 generator custom_generator {
   provider = "prisma-generator-fake-data"
   output = "./factory/fake-data.ts"
-}
-
-datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
 model User {

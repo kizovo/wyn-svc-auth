@@ -38,6 +38,12 @@ export interface ISignupReq {
   last_name: string
 }
 
+export interface ISigninReq {
+  email: string
+  password: string
+  phone: string
+}
+
 // mapping json to db fields
 export const mapSignUpDb = (data: ISignupReq): Object => {
   return {

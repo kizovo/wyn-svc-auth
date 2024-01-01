@@ -1,18 +1,23 @@
 import { Elysia } from 'elysia'
 import { swagger } from '@elysiajs/swagger'
+import { jwtMod } from '@/setup/JwtMod'
 import config from '@/config'
 import routes from '@/routes'
-import SetupDB from '@setup/Db'
+import SetupDBMysql from '@setup/DbMysql'
 import SetupLog from '@/setup/LogSentry'
 
 const app = new Elysia()
-const setupDB = new SetupDB()
+const setupDBMysql = new SetupDBMysql()
 const setupLog = new SetupLog()
-const route = new routes(app, { db: setupDB, log: setupLog })
+const route = new routes(app, { dbMysql: setupDBMysql, log: setupLog })
 
-app.use(swagger()).use(route.router()).listen(Number(config.APP_PORT))
+app
+  .use(swagger())
+  .use(jwtMod)
+  .use(route.router())
+  .listen(Number(config.APP_PORT))
 
-if (!setupDB.isDatabaseConnect()) {
+if (!setupDBMysql.isDatabaseConnect()) {
   app.stop()
   process.exit(0)
 }

@@ -1,5 +1,10 @@
 import * as dto from '@base/base.dto'
-import { IDetailUserReq, IListUserReq, ISignupReq } from '@/user/user.dto'
+import {
+  IDetailUserReq,
+  IListUserReq,
+  ISigninReq,
+  ISignupReq,
+} from '@/user/user.dto'
 import UserRepo from '@/user/user.repo'
 
 export default class UserService {
@@ -21,5 +26,9 @@ export default class UserService {
 
   async addUser(r: ISignupReq): Promise<dto.IData> {
     return (await this.repo.addUserDb(r)) as dto.IData
+  }
+
+  async signIn(r: ISigninReq): Promise<dto.IData> {
+    return (await this.repo.signInDb(r)) as dto.IData
   }
 }

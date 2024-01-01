@@ -1,4 +1,3 @@
-import { Elysia } from 'elysia'
 import * as dto from '@base/base.dto'
 import UserHandler from '@/user/user.handler'
 import UserService from '@/user/user.service'
@@ -8,7 +7,7 @@ export default class UserRoutes {
   private app
   private setup
 
-  constructor(app: Elysia, setup: dto.ISetup) {
+  constructor(app: any, setup: dto.ISetup) {
     this.app = app
     this.setup = setup
   }
@@ -17,19 +16,19 @@ export default class UserRoutes {
     const s = new UserService(this.setup)
     const h = new UserHandler(this.setup, s)
 
+    const listUser = ({ set, query }: any) => h.listUser(set, query)
+    const detailUser = ({ set, body }: any) => h.detailUser(set, body)
+    const addUser = ({ set, body }: any) => h.addUser(set, body)
+    const signIn = ({ set, body, jwtMod }: any) => h.signIn(set, body, jwtMod)
+
     return () =>
-      this.app.group(`/users/v1`, (app: any) =>
-        app
+      this.app.group(`/users/v1`, (user: any) =>
+        user
           .model(reqValidation)
-          .get(`/list`, ({ set, query }: any) => h.listUser(set, query),
-            { query: 'user.list' },)
-          .post(
-            `/list`, ({ set, body }: any) => h.detailUser(set, body),
-            { body: 'user.detail' },)
-          .post(
-            '/signup', ({ set, body }: any) => h.addUser(set, body),
-            { body: 'user.signup' },
-          ),
+          .get(`/list`, listUser, { query: 'user.list' })
+          .post(`/list`, detailUser, { body: 'user.detail' })
+          .post('/signup', addUser, { body: 'user.signup' })
+          .post('/signin', signIn, { body: 'user.signin' }),
       )
   }
 }

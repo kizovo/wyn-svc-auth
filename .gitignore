@@ -17,7 +17,8 @@
 
 # others
 /dist/
-/prisma/factory/*.js
+/prisma/mysql/factory/*.js
+/prisma/mysql/factory/fake-data.ts
 /src/base/*.js
 
 # misc

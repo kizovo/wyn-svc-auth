@@ -1,4 +1,3 @@
-import { Elysia } from 'elysia'
 import { ISetup } from '@base/base.dto'
 import { errorHandler } from '@base/base.handler'
 import * as dto from '@base/base.dto'
@@ -9,7 +8,7 @@ export default class Routes {
   private app
   private setup
 
-  constructor(app: Elysia, setup: ISetup) {
+  constructor(app: any, setup: ISetup) {
     this.app = app
     this.setup = setup
   }
@@ -18,9 +17,10 @@ export default class Routes {
     const userRoutes = new UserRoutes(this.app, this.setup)
 
     return () =>
-      this.app.get(`/stat`, () => 'Welcome to svc-user')
+      this.app
+        .get(`/stat`, () => 'Welcome to svc-user')
         .use(userRoutes.router())
-        .onError(({ code, error, set }) =>
+        .onError(({ code, error, set }: any) =>
           errorHandler({ code, message: error.message }, set as dto.IHttpSet),
         )
   }

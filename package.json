@@ -12,6 +12,7 @@
     "compile": "tsc -p ."
   },
   "dependencies": {
+    "@elysiajs/jwt": "^0.8.0",
     "@elysiajs/swagger": "0.7",
     "@prisma/client": "^5.7.1",
     "@sentry/browser": "^7.58.0",

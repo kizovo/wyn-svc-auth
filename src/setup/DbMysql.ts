@@ -1,11 +1,11 @@
 import config from '@/config'
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient as PrismaMysql } from '@prisma-mysql/client'
 
-export default class Db {
-  private prismaClient: PrismaClient
+export default class DbMysql {
+  private prismaMysql: PrismaMysql
 
   constructor() {
-    this.prismaClient = new PrismaClient({
+    this.prismaMysql = new PrismaMysql({
       errorFormat: 'minimal',
       log: [
         {
@@ -18,7 +18,7 @@ export default class Db {
       ],
     })
     if (config.APP_ENV != 'prod') {
-      this.prismaClient.$on(
+      this.prismaMysql.$on(
         'query' as never,
         (e: { query: string; params: object; duration: number }) => {
           console.log('Query: ' + e.query)
@@ -29,13 +29,13 @@ export default class Db {
     }
   }
 
-  dbMysql() {
-    return this.prismaClient
+  prisma() {
+    return this.prismaMysql
   }
 
   async isDatabaseConnect(): Promise<boolean> {
     try {
-      await this.prismaClient.$connect()
+      await this.prismaMysql.$connect()
       console.log('Database connection established!')
       return true
     } catch (error) {
