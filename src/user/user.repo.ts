@@ -21,17 +21,6 @@ const EXPOSABLE_FIELD: any = {
   lastName: true,
 }
 
-const exposableFieldBySearch = (fields: string): IDbFields => {
-  const exp = { ...EXPOSABLE_FIELD }
-  if (fields) {
-    exp.email = fields.includes('email') ?? false
-    exp.phone = fields.includes('phone') ?? false
-    exp.firstName = fields.includes('first_name') ?? false
-    exp.lastName = fields.includes('last_name') ?? false
-  }
-  return exp
-}
-
 const calculatePage = (r: dto.IPaginationReq): dto.IPage => {
   const pg_num = Number(r.pg_num)
   const pg_size = Number(r.pg_size)
@@ -39,18 +28,44 @@ const calculatePage = (r: dto.IPaginationReq): dto.IPage => {
   return { pg_num, pg_size, skip }
 }
 
+const mapResult = (data: object): dto.IData => {
+  const strData = JSON.stringify(data)
+  const oData = JSON.parse(strData)
+  return { data: oData, error: null }
+}
+
+const mapResultWithPagination = (
+  pagination: object,
+  data: object,
+): dto.IDataPagination => {
+  const strData = JSON.stringify(data)
+  const oData = JSON.parse(strData)
+  return { pagination, data: oData, error: null }
+}
+
 export default class UserRepo {
   private dbMysql
-  private db
+  private dbUser
 
   constructor(setup: dto.ISetup) {
     this.dbMysql = setup.dbMysql
-    this.db = this.dbMysql.prisma()
+    this.dbUser = this.dbMysql.prisma().user
   }
 
-  async detailUserDb(r: IDetailUserReq): Promise<object> {
+  exposableFieldBySearch = (fields: string): IDbFields => {
+    const exp = { ...EXPOSABLE_FIELD }
+    if (fields) {
+      exp.email = fields.includes('email') ?? false
+      exp.phone = fields.includes('phone') ?? false
+      exp.firstName = fields.includes('first_name') ?? false
+      exp.lastName = fields.includes('last_name') ?? false
+    }
+    return exp
+  }
+
+  detailUserDb = async (r: IDetailUserReq): Promise<object> => {
     let result = await this.dbMysql.wrapException(async () => {
-      return await this.db.user.findMany({
+      return await this.dbUser.findMany({
         select: EXPOSABLE_FIELD,
         where: {
           uuid: { in: r.uuid },
@@ -59,13 +74,16 @@ export default class UserRepo {
       })
     })
     result = mapFieldToJson(result as any)
-    return this.mapResult(result)
+    return mapResult(result)
   }
 
-  async deleteUserDb(r: IDeleteUserReq, flag = 'soft_delete'): Promise<object> {
+  deleteUserDb = async (
+    r: IDeleteUserReq,
+    flag = 'soft_delete',
+  ): Promise<object> => {
     await this.dbMysql.wrapException(async () => {
       if (flag == 'hard_delete') {
-        return await this.db.user.deleteMany({
+        return await this.dbUser.deleteMany({
           where: {
             uuid: { in: r.uuid },
           },
@@ -73,7 +91,7 @@ export default class UserRepo {
       }
 
       // default soft_delete
-      return await this.db.user.updateMany({
+      return await this.dbUser.updateMany({
         where: {
           uuid: { in: r.uuid },
         },
@@ -82,20 +100,19 @@ export default class UserRepo {
         },
       })
     })
-    return this.mapResult({})
+    return mapResult({})
   }
 
-  async addUserDb(r: ISignupReq): Promise<object> {
-    return this.dbMysql.wrapException(async () => {
+  addUserDb = async (r: ISignupReq): Promise<object> =>
+    this.dbMysql.wrapException(async () => {
       r.password = await hash(r.password)
-      return await this.db.user.create({ data: mapSignUpDb(r) as any })
+      return await this.dbUser.create({ data: mapSignUpDb(r) as any })
     })
-  }
 
-  async signInDb(r: ISigninReq): Promise<object> {
+  signInDb = async (r: ISigninReq): Promise<object> => {
     const user = await this.dbMysql.wrapException(async () => {
       EXPOSABLE_FIELD.password = true
-      return await this.db.user.findFirst({
+      return await this.dbUser.findFirst({
         select: EXPOSABLE_FIELD,
         where: {
           OR: [
@@ -110,7 +127,7 @@ export default class UserRepo {
     if (user) {
       const match = await verifyHash(r.password, user.password)
       return match
-        ? this.mapResult(user)
+        ? mapResult(user)
         : {
             data: null,
             error: { code: 'PU002', message: C.ERROR_MSG['PU002'] },
@@ -123,11 +140,14 @@ export default class UserRepo {
     }
   }
 
-  async listUserDb(r: IListUserReq, flag = 'exclude_deleted'): Promise<object> {
+  listUserDb = async (
+    r: IListUserReq,
+    flag = 'exclude_deleted',
+  ): Promise<object> => {
     let { pg_size, pg_num, skip } = calculatePage(r)
     let { result, total, count } = await this.dbMysql.wrapException(
       async () => {
-        const f = exposableFieldBySearch(r.fields)
+        const f = this.exposableFieldBySearch(r.fields)
         const whereRules = {
           ...(!r.search
             ? {}
@@ -142,13 +162,13 @@ export default class UserRepo {
           ...(flag == 'exclude_deleted' ? { deletedAt: null } : {}),
         }
 
-        const result = await this.db.user.findMany({
+        const result = await this.dbUser.findMany({
           select: f,
           where: whereRules,
           take: pg_size,
           skip,
         })
-        const total = await this.db.user.count({ where: whereRules })
+        const total = await this.dbUser.count({ where: whereRules })
         const count = result.length
         return { result, total, count }
       },
@@ -156,21 +176,6 @@ export default class UserRepo {
 
     const pagination = { count, pg_num, pg_size, total }
     result = mapFieldToJson(result as any)
-    return this.mapResultWithPagination(pagination, result)
-  }
-
-  mapResult(data: object): dto.IData {
-    const strData = JSON.stringify(data)
-    const oData = JSON.parse(strData)
-    return { data: oData, error: null }
-  }
-
-  mapResultWithPagination(
-    pagination: object,
-    data: object,
-  ): dto.IDataPagination {
-    const strData = JSON.stringify(data)
-    const oData = JSON.parse(strData)
-    return { pagination, data: oData, error: null }
+    return mapResultWithPagination(pagination, result)
   }
 }

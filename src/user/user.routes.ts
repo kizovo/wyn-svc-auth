@@ -12,7 +12,7 @@ export default class UserRoutes {
     this.setup = setup
   }
 
-  router() {
+  router = () => {
     const s = new UserService(this.setup)
     const h = new UserHandler(this.setup, s)
 
@@ -22,15 +22,14 @@ export default class UserRoutes {
     const addUser = ({ set, body }: any) => h.addUser(set, body)
     const signIn = ({ set, body, jwtMod }: any) => h.signIn(set, body, jwtMod)
 
-    return () =>
-      this.app.group(`/users/v1`, (user: any) =>
-        user
-          .model(reqValidation)
-          .get(`/list`, listUser, { query: 'user.list' })
-          .post(`/list`, detailUser, { body: 'user.detail' })
-          .post(`/delete`, deleteUser, { body: 'user.delete' })
-          .post('/signup', addUser, { body: 'user.signup' })
-          .post('/signin', signIn, { body: 'user.signin' }),
-      )
+    return this.app.group(`/users/v1`, (user: any) =>
+      user
+        .model(reqValidation)
+        .get(`/list`, listUser, { query: 'user.list' })
+        .post(`/list`, detailUser, { body: 'user.detail' })
+        .post(`/delete`, deleteUser, { body: 'user.delete' })
+        .post('/signup', addUser, { body: 'user.signup' })
+        .post('/signin', signIn, { body: 'user.signin' }),
+    )
   }
 }
