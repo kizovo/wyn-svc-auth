@@ -10,10 +10,10 @@
 // 5. compile ts to js: $ npx tsc ./prisma/factory/script-[data].ts
 // 6. $ node ./prisma/factory/script-[data].js
 
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient as PrismaMysql } from '@prisma-mysql/client'
 import { users } from "./fake-user";
 
-const prisma = new PrismaClient();
+const prisma = new PrismaMysql();
 
 // A `main` function so that we can use async/await
 async function main() {

@@ -1,13 +1,13 @@
-import {  } from '/home/neohub/works/wyn-svc-auth/node_modules/@prisma/client';
+import {  } from '/home/neohub/works/wyn-svc-auth/node_modules/@prisma-mysql/client';
 import { faker } from '@faker-js/faker';
 import { randomUUID } from 'node:crypto';
 
 export function fakeUser() {
-  const RANDOM_UPPER_CASE = faker.string.alpha({ length: 1, casing:'upper' })
-  const RANDOM_LOWER_CASE = faker.string.alpha({ length: 3, casing: 'lower' })
-  const RANDOM_NUMBER = faker.string.numeric(4)
-  const RANDOM_SPECIAL_CHAR = faker.string.symbol(1)
-  const PASSWORD_MEDIUM = RANDOM_UPPER_CASE + RANDOM_LOWER_CASE + RANDOM_NUMBER + RANDOM_SPECIAL_CHAR
+  // const RANDOM_UPPER_CASE = faker.string.alpha({ length: 1, casing:'upper' })
+  // const RANDOM_LOWER_CASE = faker.string.alpha({ length: 3, casing: 'lower' })
+  // const RANDOM_NUMBER = faker.string.numeric(4)
+  // const RANDOM_SPECIAL_CHAR = faker.string.symbol(1)
+  // const PASSWORD_MEDIUM = RANDOM_UPPER_CASE + RANDOM_LOWER_CASE + RANDOM_NUMBER + RANDOM_SPECIAL_CHAR
   const PHONE_E164 = `+${faker.string.numeric({ length: { min: 10, max: 14 } })}`
   const DATE_NOW = new Date()
 
@@ -20,6 +20,8 @@ export function fakeUser() {
     firstName: faker.person.firstName(),
     lastName: faker.person.lastName(),
     basicId: true,
+    lastLogin: undefined,
+    lastChangePassword: DATE_NOW,
     createdAt: DATE_NOW,
     updatedAt: DATE_NOW,
     deletedAt: undefined,
@@ -36,6 +38,8 @@ export function fakeUserComplete() {
     firstName: user.firstName,
     lastName: user.lastName,
     basicId: user.basicId,
+    lastLogin: user.lastLogin,
+    lastChangePassword: user.lastChangePassword,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
     deletedAt: user.deletedAt,

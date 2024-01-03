@@ -126,12 +126,24 @@ export default class UserRepo {
 
     if (user) {
       const match = await verifyHash(r.password, user.password)
-      return match
-        ? mapResult(user)
-        : {
-            data: null,
-            error: { code: 'PU002', message: C.ERROR_MSG['PU002'] },
-          }
+      if (match) {
+        // update user last login time
+        await this.dbUser.update({
+          where: {
+            email: r.email,
+          },
+          data: {
+            lastLogin: new Date(),
+          },
+        })
+
+        return mapResult(user)
+      }
+
+      return {
+        data: null,
+        error: { code: 'PU002', message: C.ERROR_MSG['PU002'] },
+      }
     }
 
     return {
