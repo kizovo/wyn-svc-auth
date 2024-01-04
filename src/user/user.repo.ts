@@ -111,9 +111,14 @@ export default class UserRepo {
 
   signInDb = async (r: ISigninReq): Promise<object> => {
     const user = await this.dbMysql.wrapException(async () => {
-      EXPOSABLE_FIELD.password = true
       return await this.dbUser.findFirst({
-        select: EXPOSABLE_FIELD,
+        select: {
+          uuid: true,
+          firstName: true,
+          lastName: true,
+          createdAt: true,
+          password: true,
+        },
         where: {
           OR: [
             ...(r.email ? [{ email: r.email }] : [{}]),
@@ -136,8 +141,9 @@ export default class UserRepo {
             lastLogin: new Date(),
           },
         })
-
-        return mapResult(user)
+        const exposeUser = { ...user } as Partial<any>
+        delete exposeUser.password
+        return mapResult(exposeUser)
       }
 
       return {
@@ -187,7 +193,6 @@ export default class UserRepo {
     )
 
     const pagination = { count, pg_num, pg_size, total }
-    result = mapFieldToJson(result as any)
-    return mapResultWithPagination(pagination, result)
+    return mapResultWithPagination(pagination, mapFieldToJson(result as any))
   }
 }
