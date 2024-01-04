@@ -21,6 +21,14 @@ jobs:
         echo "Files in the current directory:"
         ls -al
 
+    - name: Setup Bun
+      uses: oven-sh/setup-bun@v1
+      with:
+        bun-version: 0.6.9
+      run: bun install
+      run: bun index.ts
+      run: bun run build
+
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
