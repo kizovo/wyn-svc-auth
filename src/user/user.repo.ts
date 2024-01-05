@@ -114,8 +114,6 @@ export default class UserRepo {
       return await this.dbUser.findFirst({
         select: {
           uuid: true,
-          firstName: true,
-          lastName: true,
           createdAt: true,
           password: true,
         },
