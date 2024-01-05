@@ -1,10 +1,10 @@
 import { Elysia } from 'elysia'
 import { swagger } from '@elysiajs/swagger'
-import { jwtMod } from '@/setup/JwtMod'
+import { jwtMod } from '@/_setup/JwtMod'
 import config from '@/config'
 import routes from '@/routes'
-import SetupDBMysql from '@setup/DbMysql'
-import SetupLog from '@/setup/LogSentry'
+import SetupDBMysql from '@/_setup/DbMysql'
+import SetupLog from '@/_setup/LogSentry'
 
 const app = new Elysia()
 const setupDBMysql = new SetupDBMysql()

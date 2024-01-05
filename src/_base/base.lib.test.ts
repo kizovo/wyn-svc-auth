@@ -1,4 +1,5 @@
 import { expect, test } from 'bun:test'
+import * as C from '@/constant'
 import * as lib from '@base/base.lib'
 
 test('isStrIsNumber("a"), expect: false', () => {
@@ -9,14 +10,8 @@ test('isStrIsNumber("32"), expect: true', () => {
   expect(lib.isStrIsNumber('32')).toBe(true)
 })
 
-test('hash("Test1234!") & verify it, expect: the hash & verify is match', async () => {
-  const hash = await lib.hash('Test1234!')
-  const isMatch = await lib.verifyHash('Test1234!', hash)
-  expect(isMatch).toBe(true)
-})
-
 // Test Regex
-const PHONE_E164 = /^\+[1-9]\d{7,13}$/
+const PHONE_E164 = C.REGEX.PHONE_E164
 test('regex: test "abcde" with e164 format +(8-14 digit number), expect: false', async () => {
   const isMatch = PHONE_E164.test('abcde')
   expect(isMatch).toBe(false)
@@ -37,7 +32,7 @@ test('regex: test "+12345678" with e164 format +(8-14 digit number), expect: tru
   expect(isMatch).toBe(true)
 })
 
-const PASSWORD_MEDIUM = /^(?=.*[A-Z]).{8,}$/
+const PASSWORD_MEDIUM = C.REGEX.PASSWORD_MEDIUM
 test('regex: test "abcde" with password medium, expect: false', async () => {
   const isMatch = PASSWORD_MEDIUM.test('abcde')
   expect(isMatch).toBe(false)

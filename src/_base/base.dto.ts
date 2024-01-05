@@ -1,5 +1,5 @@
-import SetupDBMysql from '@setup/DbMysql'
-import SetupLogSentry from '@/setup/LogSentry'
+import SetupDBMysql from '@/_setup/DbMysql'
+import SetupLogSentry from '@/_setup/LogSentry'
 
 export interface IError {
   code: string
