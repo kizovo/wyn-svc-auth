@@ -13,12 +13,26 @@ import {
 } from '@/user/user.dto'
 
 // list down all database field that safely expose to view, update & delete
-const EXPOSABLE_FIELD: any = {
+const FIELD_LIST_USER: any = {
   uuid: true,
   email: true,
   phone: true,
   firstName: true,
   lastName: true,
+}
+
+const FIELD_DETAIL_USER: any = {
+  uuid: true,
+  email: true,
+  phone: true,
+  firstName: true,
+  lastName: true,
+}
+
+const FIELD_SIGNIN_USER: any = {
+  uuid: true,
+  createdAt: true,
+  password: true,
 }
 
 const calculatePage = (r: dto.IPaginationReq): dto.IPage => {
@@ -34,10 +48,7 @@ const mapResult = (data: object): dto.IData => {
   return { data: oData, error: null }
 }
 
-const mapResultWithPagination = (
-  pagination: object,
-  data: object,
-): dto.IDataPagination => {
+const mapResultWithPagination = (pagination: object, data: object): dto.IDataPagination => {
   const strData = JSON.stringify(data)
   const oData = JSON.parse(strData)
   return { pagination, data: oData, error: null }
@@ -52,21 +63,53 @@ export default class UserRepo {
     this.dbUser = this.dbMysql.prisma().user
   }
 
-  exposableFieldBySearch = (fields: string): IDbFields => {
-    const exp = { ...EXPOSABLE_FIELD }
-    if (fields) {
-      exp.email = fields.includes('email') ?? false
-      exp.phone = fields.includes('phone') ?? false
-      exp.firstName = fields.includes('first_name') ?? false
-      exp.lastName = fields.includes('last_name') ?? false
+  exposableFieldBySearch = (field: string): IDbFields => {
+    const exp = { ...FIELD_LIST_USER }
+    if (field) {
+      exp.email = field.includes('email') ?? false
+      exp.phone = field.includes('phone') ?? false
+      exp.firstName = field.includes('first_name') ?? false
+      exp.lastName = field.includes('last_name') ?? false
     }
     return exp
+  }
+
+  listUserDb = async (r: IListUserReq, flag = 'exclude_deleted'): Promise<object> => {
+    let { pg_size, pg_num, skip } = calculatePage(r)
+    let { result, total, count } = await this.dbMysql.wrapException(async () => {
+      const f = this.exposableFieldBySearch(r.fields)
+      const whereRules = {
+        ...(!r.search
+          ? {}
+          : {
+              OR: [
+                { email: f.email ? { contains: r.search } : {} },
+                { phone: f.phone ? { contains: r.search } : {} },
+                { firstName: f.firstName ? { contains: r.search } : {} },
+                { lastName: f.lastName ? { contains: r.search } : {} },
+              ],
+            }),
+        ...(flag == 'exclude_deleted' ? { deletedAt: null } : {}),
+      }
+
+      const result = await this.dbUser.findMany({
+        select: f,
+        where: whereRules,
+        take: pg_size,
+        skip,
+      })
+      const total = await this.dbUser.count({ where: whereRules })
+      const count = result.length
+      return { result, total, count }
+    })
+    const pagination = { count, pg_num, pg_size, total }
+    return mapResultWithPagination(pagination, mapFieldToJson(result as any))
   }
 
   detailUserDb = async (r: IDetailUserReq): Promise<object> => {
     let result = await this.dbMysql.wrapException(async () => {
       return await this.dbUser.findMany({
-        select: EXPOSABLE_FIELD,
+        select: FIELD_DETAIL_USER,
         where: {
           uuid: { in: r.uuid },
           deletedAt: null,
@@ -77,10 +120,7 @@ export default class UserRepo {
     return mapResult(result)
   }
 
-  deleteUserDb = async (
-    r: IDeleteUserReq,
-    flag = 'soft_delete',
-  ): Promise<object> => {
+  deleteUserDb = async (r: IDeleteUserReq, flag = 'soft_delete'): Promise<object> => {
     await this.dbMysql.wrapException(async () => {
       if (flag == 'hard_delete') {
         return await this.dbUser.deleteMany({
@@ -109,19 +149,22 @@ export default class UserRepo {
       return await this.dbUser.create({ data: mapSignUpDb(r) as any })
     })
 
+  updateUserDbByEmail = async (email: string, updatedData: object): Promise<object> =>
+    await this.dbUser.update({
+      where: {
+        email,
+      },
+      data: {
+        lastLogin: new Date(),
+      },
+    })
+
   signInDb = async (r: ISigninReq): Promise<object> => {
     const user = await this.dbMysql.wrapException(async () => {
       return await this.dbUser.findFirst({
-        select: {
-          uuid: true,
-          createdAt: true,
-          password: true,
-        },
+        select: FIELD_SIGNIN_USER,
         where: {
-          OR: [
-            ...(r.email ? [{ email: r.email }] : [{}]),
-            ...(r.phone ? [{ phone: r.phone }] : [{}]),
-          ],
+          OR: [...(r.email ? [{ email: r.email }] : [{}]), ...(r.phone ? [{ phone: r.phone }] : [{}])],
           basicId: true,
         },
       })
@@ -131,14 +174,7 @@ export default class UserRepo {
       const match = await verifyHash(r.password, user.password)
       if (match) {
         // update user last login time
-        await this.dbUser.update({
-          where: {
-            email: r.email,
-          },
-          data: {
-            lastLogin: new Date(),
-          },
-        })
+        this.updateUserDbByEmail(r.email, { lastLogin: new Date() })
         const exposeUser = { ...user } as Partial<any>
         delete exposeUser.password
         return mapResult(exposeUser)
@@ -154,43 +190,5 @@ export default class UserRepo {
       data: null,
       error: { code: 'PU001', message: C.ERROR_MSG['PU001'] },
     }
-  }
-
-  listUserDb = async (
-    r: IListUserReq,
-    flag = 'exclude_deleted',
-  ): Promise<object> => {
-    let { pg_size, pg_num, skip } = calculatePage(r)
-    let { result, total, count } = await this.dbMysql.wrapException(
-      async () => {
-        const f = this.exposableFieldBySearch(r.fields)
-        const whereRules = {
-          ...(!r.search
-            ? {}
-            : {
-                OR: [
-                  { email: f.email ? { contains: r.search } : {} },
-                  { phone: f.phone ? { contains: r.search } : {} },
-                  { firstName: f.firstName ? { contains: r.search } : {} },
-                  { lastName: f.lastName ? { contains: r.search } : {} },
-                ],
-              }),
-          ...(flag == 'exclude_deleted' ? { deletedAt: null } : {}),
-        }
-
-        const result = await this.dbUser.findMany({
-          select: f,
-          where: whereRules,
-          take: pg_size,
-          skip,
-        })
-        const total = await this.dbUser.count({ where: whereRules })
-        const count = result.length
-        return { result, total, count }
-      },
-    )
-
-    const pagination = { count, pg_num, pg_size, total }
-    return mapResultWithPagination(pagination, mapFieldToJson(result as any))
   }
 }
