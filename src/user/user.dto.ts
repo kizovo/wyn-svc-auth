@@ -8,6 +8,9 @@ export interface IUser {
   password: string
   firstName: string
   lastName: string
+  basicId: string
+  lastChangePassword: string
+  lastLogin: string
   createdAt: string
   updatedAt: string
   deletedAt: string
@@ -57,20 +60,27 @@ export const mapSignUpDb = (data: ISignupReq): Object => {
     firstName: data.first_name,
     lastName: data.last_name,
     basicId: data.email || data.phone ? true : false,
+    lastChangePassword: new Date(),
   }
 }
 
 // mapping db fields to json
 export const mapFieldToJson = (data: Array<IUser>): [] => {
   const res: any = []
-  data.forEach((_, i) => {
+  data.forEach((v, i) => {
     res.push({
-      ...(data[i].uuid ? { uuid: data[i].uuid } : {}),
-      ...(data[i].email ? { email: data[i].email } : {}),
-      ...(data[i].phone ? { phone: data[i].phone } : {}),
-      ...(data[i].firstName ? { first_name: data[i].firstName } : {}),
-      ...(data[i].lastName ? { last_name: data[i].lastName } : {}),
-      ...(data[i].createdAt ? { created_at: data[i].createdAt } : {}),
+      ...(v.uuid ? { uuid: v.uuid } : {}),
+      ...(v.email ? { email: v.email } : {}),
+      ...(v.phone ? { phone: v.phone } : {}),
+      ...(v.password ? { phone: v.password } : {}),
+      ...(v.firstName ? { first_name: v.firstName } : {}),
+      ...(v.lastName ? { last_name: v.lastName } : {}),
+      ...(v.basicId ? { basic_id: v.basicId } : {}),
+      ...(v.lastLogin ? { last_login: v.lastLogin } : {}),
+      ...(v.lastChangePassword ? { last_change_password: v.lastChangePassword } : {}),
+      ...(v.createdAt ? { created_at: v.createdAt } : {}),
+      ...(v.updatedAt ? { updated_at: v.updatedAt } : {}),
+      ...(v.deletedAt ? { deleted_at: v.deletedAt } : {}),
     })
   })
   return res
