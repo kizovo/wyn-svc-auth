@@ -22,6 +22,4 @@ if (!setupDBMysql.isDatabaseConnect()) {
   process.exit(0)
 }
 
-console.log(
-`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
-);
+console.info(`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`)

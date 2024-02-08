@@ -1,6 +1,6 @@
 import * as C from '@/constant'
 import * as dto from '@base/base.dto'
-import { hash, verifyHash } from '@base/base.lib'
+import * as lib from '@base/base.lib'
 import {
   IDbFields,
   IDetailUserReq,
@@ -48,7 +48,7 @@ const mapResult = (data: object): dto.IData => {
   return { data: oData, error: null }
 }
 
-const mapResultWithPagination = (pagination: object, data: object): dto.IDataPagination => {
+const mapResultWithPagination = (pagination: object, data: object): dto.IDataPage => {
   const strData = JSON.stringify(data)
   const oData = JSON.parse(strData)
   return { pagination, data: oData, error: null }
@@ -74,7 +74,8 @@ export default class UserRepo {
     return exp
   }
 
-  listUserDb = async (r: IListUserReq, flag = 'exclude_deleted'): Promise<object> => {
+  listUserDb = async (set: dto.IHttpSet, r: IListUserReq, flag = 'exclude_deleted'): Promise<object> => {
+    lib.log(`#${set.headers.trace}-userrepo.listuserdb()`)
     let { pg_size, pg_num, skip } = calculatePage(r)
     let { result, total, count } = await this.dbMysql.wrapException(async () => {
       const f = this.exposableFieldBySearch(r.fields)
@@ -106,7 +107,8 @@ export default class UserRepo {
     return mapResultWithPagination(pagination, mapFieldToJson(result as any))
   }
 
-  detailUserDb = async (r: IDetailUserReq): Promise<object> => {
+  detailUserDb = async (set: dto.IHttpSet, r: IDetailUserReq): Promise<object> => {
+    lib.log(`#${set.headers.trace}-userrepo.detailuserdb()`)
     let result = await this.dbMysql.wrapException(async () => {
       return await this.dbUser.findMany({
         select: FIELD_DETAIL_USER,
@@ -120,9 +122,10 @@ export default class UserRepo {
     return mapResult(result)
   }
 
-  deleteUserDb = async (r: IDeleteUserReq, flag = 'soft_delete'): Promise<object> => {
+  deleteUserDb = async (set: dto.IHttpSet, r: IDeleteUserReq, flag = 'soft_delete'): Promise<object> => {
     await this.dbMysql.wrapException(async () => {
       if (flag == 'hard_delete') {
+        lib.log(`#${set.headers.trace}-userrepo.deleteuserdb()-hard_delete`)
         return await this.dbUser.deleteMany({
           where: {
             uuid: { in: r.uuid },
@@ -131,6 +134,7 @@ export default class UserRepo {
       }
 
       // default soft_delete
+      lib.log(`#${set.headers.trace}-userrepo.deleteuserdb()-soft_delete`)
       return await this.dbUser.updateMany({
         where: {
           uuid: { in: r.uuid },
@@ -143,13 +147,14 @@ export default class UserRepo {
     return mapResult({})
   }
 
-  addUserDb = async (r: ISignupReq): Promise<object> =>
+  addUserDb = async (set: dto.IHttpSet, r: ISignupReq): Promise<object> =>
     this.dbMysql.wrapException(async () => {
-      r.password = await hash(r.password)
+      lib.log(`#${set.headers.trace}-userrepo.adduserdb()`)
+      r.password = await lib.hash(r.password)
       return await this.dbUser.create({ data: mapSignUpDb(r) as any })
     })
 
-  updateUserDbByEmail = async (email: string, updatedData: object): Promise<object> =>
+  updateUserDbByEmail = async (set: dto.IHttpSet, email: string, updatedData: object): Promise<object> =>
     await this.dbUser.update({
       where: {
         email,
@@ -159,7 +164,7 @@ export default class UserRepo {
       },
     })
 
-  signInDb = async (r: ISigninReq): Promise<object> => {
+  signInDb = async (set: dto.IHttpSet, r: ISigninReq): Promise<object> => {
     const user = await this.dbMysql.wrapException(async () => {
       return await this.dbUser.findFirst({
         select: FIELD_SIGNIN_USER,
@@ -171,10 +176,12 @@ export default class UserRepo {
     })
 
     if (user) {
-      const match = await verifyHash(r.password, user.password)
+      lib.log(`#${set.headers.trace}-userrepo.signindb()-user_found`)
+      const match = await lib.verifyHash(r.password, user.password)
       if (match) {
+        lib.log(`#${set.headers.trace}-userrepo.signindb()-pass_match`)
         // update user last login time
-        this.updateUserDbByEmail(r.email, { lastLogin: new Date() })
+        this.updateUserDbByEmail(set, r.email, { lastLogin: new Date() })
         const exposeUser = { ...user } as Partial<any>
         delete exposeUser.password
         return mapResult(exposeUser)

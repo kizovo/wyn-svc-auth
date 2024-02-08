@@ -12,6 +12,7 @@
 
 import { PrismaClient as PrismaMysql } from '@prisma-mysql/client'
 import { users } from "./fake-user";
+import * as lib from '@base/base.lib'
 
 const prisma = new PrismaMysql();
 
@@ -25,9 +26,7 @@ async function main() {
     data: users,
   });
 
-  console.log(
-    `Created users`
-  );
+  lib.log(`Created users`)
 }
 
 main()
@@ -35,7 +34,7 @@ main()
     await prisma.$disconnect();
   })
   .catch(async (e) => {
-    console.error(e);
+    lib.log(e, 'error')
     await prisma.$disconnect();
     process.exit(1);
   });
